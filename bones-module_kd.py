@@ -1,5 +1,4 @@
-# -*- encoding: utf8 -*-
-import re
+
 import string
 import random
 #import logging
@@ -14,6 +13,9 @@ class utils(Module):
 	@event.handler(trigger="pw")
 	@event.handler(trigger="password")
 	def cmdPW(self, event):
-		def pwGen(size=16, chars=string.ascii_uppercase + string.ascii_lowercase + string.digits):
+		targs = 16
+		if len(event.args) > 0:
+			targs = event.args[1]
+		def pwGen(size=targs, chars=string.ascii_uppercase + string.ascii_lowercase + string.digits):
 			return ''.join(random.choice(chars) for x in range(size))
 		event.client.notice(event.user.nickname, "Here you go: %s" % pwGen() )
