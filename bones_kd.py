@@ -1,4 +1,5 @@
 # -*- encoding: utf8 -*-
+import re
 import string
 import random
 #import logging
@@ -16,4 +17,4 @@ class utils(Module):
 	@event.handler(trigger="pw")
 	@event.handler(trigger="password")
 	def cmdPW(self, event):
-		event.client.msg(event.channel, "Here's your password: " % self.pwGen() )
+		event.client.msg(event.channel, "Here you go: %s" % self.pwGen() )
