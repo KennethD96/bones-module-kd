@@ -13,15 +13,23 @@ class utils(Module):
 	@event.handler(trigger="password")
 	def cmdPW(self, event):
 		tArgs = 16
-		if len(event.args) > 128:
-			tArgs = 16
-		elif len(event.args) > 0:
-			tArgs = int(event.args[0])
+		chars = string.ascii_uppercase + string.ascii_lowercase + string.digits
 		
-		def pwGen(size=tArgs, chars=string.ascii_uppercase + string.ascii_lowercase + string.digits):
-			return ''.join(random.choice(chars) for x in range(size))
-		event.client.notice(event.user.nickname, "Here you go: %s" % pwGen() )
+		if event.args[0].isdigit():
+		
+			if event.args[0] > 0:
+				tArgs = int(event.args[0])
+				if event.args[0] > 128:
+					tArgs = 16
+
+				gen = ''.join(random.choice(chars) for x in range(tArgs))
+				pwGen = 'Here you go: %s' % gen
+			
+		else:
+			pwGen = "Value must be a valid number between 1 and 128!"
+		
+		event.client.notice(event.user.nickname, pwGen )
 
 	@event.handler(trigger="echo") # Used to debug tArgs
 	def cmdEcho(self, event):
-		event.client.msg(event.channel, " ".join(event.args))
+		event.client.msg(event.channel, " ".join(event.args)) 
