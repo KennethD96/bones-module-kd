@@ -5,8 +5,7 @@ import random
 #from datetime import datetime
 
 from bones import event
-from bones.bot import Module, urlopener
-
+from bones.bot import Module
 
 class utils(Module):
 
@@ -17,13 +16,12 @@ class utils(Module):
 		if len(event.args) > 128:
 			tArgs = 16
 		elif len(event.args) > 0:
-			tArgs = event.args[1]
+			tArgs = int(event.args[0])
 		
 		def pwGen(size=tArgs, chars=string.ascii_uppercase + string.ascii_lowercase + string.digits):
 			return ''.join(random.choice(chars) for x in range(size))
 		event.client.notice(event.user.nickname, "Here you go: %s" % pwGen() )
 
-	@event.handler(trigger="echo") # Used for debuging of tArgs
+	@event.handler(trigger="echo") # Used to debug tArgs
 	def cmdEcho(self, event):
-		targs = event.args[0]
-		event.client.msg(event.channel, targs)
+		event.client.msg(event.channel, " ".join(event.args))
