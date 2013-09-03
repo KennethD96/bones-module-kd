@@ -15,18 +15,13 @@ class utils(Module):
 		tArgs = 16
 		chars = string.ascii_uppercase + string.ascii_lowercase + string.digits
 		
-		if event.args[0].isdigit():
-		
-			if event.args[0] > 0:
-				tArgs = int(event.args[0])
-				if event.args[0] > 128:
-					tArgs = 16
-
-				gen = ''.join(random.choice(chars) for x in range(tArgs))
-				pwGen = 'Here you go: %s' % gen
-			
-		else:
+		if not event.args[0].isdigit():
 			pwGen = "Value must be a valid number between 1 and 128!"
+			return
+		else:
+			tArgs = max(1, min(tArgs, 128))
+			rand = ''.join(random.choice(chars) for x in range(tArgs))
+			pwGen = 'Here you go: %s' % rand
 		
 		event.client.notice(event.user.nickname, pwGen )
 
