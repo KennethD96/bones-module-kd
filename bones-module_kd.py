@@ -1,4 +1,4 @@
- # This Python file uses the following encoding: utf-8
+ # encoding: utf-8
 import string
 import random
 import re
@@ -17,25 +17,44 @@ class utils(Module):
 		Module.__init__(self, *args, **kwargs)
 		self.ongoingPings = {}
 
+	@bones.event.handler(trigger="help")
+	@bones.event.handler(trigger="h")
+	def cmdHelp(self, event):
+		with open("help.txt", "r") as helpfile:
+			helpFile = helpfile.read()
+		helpfile.closed
+		event.client.msg(event.channel, helpFile)
+
+	@bones.event.handler(trigger="motd")
+	@bones.event.handler(event="UserJoin")
+	def motd(self, event):
+		with open("motd.txt", "r") as motdfile:
+			motd = motdfile.read()
+		motdfile.closed
+		if len(motd) > 0:
+			event.client.msg(event.channel, motd)
+		else:
+			return
+
 	@bones.event.handler(trigger="pw") # Sends a random password by notice
 	@bones.event.handler(trigger="password")
 	@bones.event.handler(trigger="random")
 	def cmdPW(self, event):
+		maxLen = 256
 		tArgs = 16
 		args = "".join(event.args)
 		chars = string.ascii_uppercase + string.ascii_lowercase + string.digits
 		rand = "".join(random.choice(chars) for x in range(tArgs))
 		if len(event.args) > 0:
-			if int(event.args[0]) > 256:
-				event.client.msg(event.channel, "Value must be a valid number between 1 and 256!")
+			if int(event.args) > maxLen:
+				event.client.msg(event.channel, "Lenght must be a valid number between 1 and 256!")
 			else:
 				tArgs = int(event.args[0])
-				tArgs = max(1, min(tArgs, 256))
+				tArgs = max(1, min(tArgs, maxLen))
 				rand = "".join(random.choice(chars) for x in range(tArgs))
 				event.client.notice(event.user.nickname, 'Here you go: %s' % rand)
 		else:
 			event.client.notice(event.user.nickname, 'Here you go: %s' % rand)
-
 
 	@bones.event.handler(trigger="calc")
 	@bones.event.handler(trigger="cc")
@@ -49,7 +68,7 @@ class utils(Module):
 			calc = Popen("bc", stdin=PIPE, stdout=PIPE)
 			result = "".join(calc.communicate("%s\n" % formula)[0].split('\\\n'))
 			if len(result) > maxLen:
-				event.client.msg(event.channel, "Result too long for print")
+				event.client.msg(event.channel, "Result too long for chat.")
 			else:
 				if result.rstrip("\n").isdigit():
 					event.client.msg(event.channel,"{0:,}".format(int(result)).replace(",", "'"))
