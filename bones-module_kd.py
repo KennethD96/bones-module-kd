@@ -1,4 +1,5 @@
  # encoding: utf-8
+import os
 import string
 import random
 import re
@@ -11,60 +12,42 @@ import bones.event
 from bones.bot import Module
 from twisted.internet import reactor
 
-class utils(Module):
+mod_dir = os.path.join(os.path.dirname(__file__), "mod_kd")
+
+class general(Module):
 
 	def __init__(self, *args, **kwargs):
 		Module.__init__(self, *args, **kwargs)
-		self.ongoingPings = {}
+		self.motdOnUserJoin = True
 
 	@bones.event.handler(trigger="help")
 	@bones.event.handler(trigger="h")
-	def cmdHelp(self, event, i=0):
-		with open("help.txt", "r") as helpfile:
-			helpFile = helpfile.read()
+	def cmdHelp(self, event):
+		with open(os.path.join(mod_dir, "help.txt"), "r") as helpfile:
+			helpTxt = helpfile.read()
 		helpfile.closed
-		help_lines = helpFile.split("\n")
-		for line in help_lines:
-			reactor.callLater(i*0.2, event.channel.msg, line)
-			i =+ 1
+		event.channel.msg(helpTxt.rstrip("\n"))
 
 	@bones.event.handler(trigger="motd")
 	@bones.event.handler(event=bones.event.UserJoinEvent)
 	def motd(self, event, i=0):
-		with open("motd.txt", "r") as motdfile:
+		with open(os.path.join(mod_dir, "motd.txt"), "r") as motdfile:
 			motd = motdfile.read()
 		motdfile.closed
 		if len(motd) > 0:
 			motd_lines = motd.split("\n")
 			for line in motd_lines:
-				reactor.callLater(i*0.2, event.channel.msg, line)
+				reactor.callLater(i*1.5, event.channel.msg, line)
 				i =+ 1
 		else:
 			return
 
-	@bones.event.handler(trigger="pw") # Sends a random password by notice
-	@bones.event.handler(trigger="password")
-	@bones.event.handler(trigger="random")
-	def cmdPW(self, event):
-		maxLen = 256
-		tArgs = 16
-		args = "".join(event.args)
-		chars = string.ascii_uppercase + string.ascii_lowercase + string.digits
-		rand = "".join(random.choice(chars) for x in range(tArgs))
-		if len(event.args) > 0:
-			if int(event.args) > maxLen:
-				event.channel.msg("Length must be a valid number between 1 and 256!")
-			else:
-				tArgs = int(event.args[0])
-				tArgs = max(1, min(tArgs, maxLen))
-				rand = "".join(random.choice(chars) for x in range(tArgs))
-				event.user.notice('Here you go: %s' % rand)
-		else:
-			event.user.notice('Here you go: %s' % rand)
+class utils(Module):
 
 	@bones.event.handler(trigger="calc")
 	@bones.event.handler(trigger="cc")
 	@bones.event.handler(trigger="c")
+	@bones.event.handler(trigger="bc")
 	def cmdCalc(self, event):
 		maxLen = 512
 		if not event.args:
@@ -77,25 +60,47 @@ class utils(Module):
 				event.channel.msg("Result too long for chat.")
 			else:
 				if result.rstrip("\n").isdigit():
-					event.channel.msg("{0:,}".format(int(result)).replace(",", "'"))
+					event.channel.msg("{0:,}".format(int(result)).replace(",", ","))
 				else:
 					event.channel.msg(result)
+
+	@bones.event.handler(trigger="ccon") # Preparing Currency Converter module.
+	def cmdCurrencyConvert(self, event):
+		return
+
+	@bones.event.handler(trigger="pw")
+	@bones.event.handler(trigger="password")
+	@bones.event.handler(trigger="random")
+	def cmdPW(self, event):
+		maxLen = 256
+		tArgs = 16
+		chars = string.ascii_uppercase + string.ascii_lowercase + string.digits
+		rand = "".join(random.choice(chars) for x in range(tArgs))
+		if len(event.args) > 0:
+			if int(event.args[0]) > int(maxLen):
+				event.channel.msg("Length must be a valid number between 1 and 256!")
+			else:
+				tArgs = int(event.args[0])
+				tArgs = max(1, min(tArgs, maxLen))
+				rand = "".join(random.choice(chars) for x in range(tArgs))
+				event.user.notice('Here you go: %s' % rand)
+		else:
+			event.user.notice('Here you go: %s' % rand)
 
 	@bones.event.handler(trigger="ping")
 	def cmdPing(self, event):
 		nick = event.user.nickname
 		if nick not in self.ongoingPings:
-			self.ongoingPings[nick] = event.channel
-			event.client.ping(nick)
+			self.ongoingPings[nick] = event.channel.name
+			event.user.ping()
 		else:
 			event.user.notice("Please wait until your ongoing ping in %s is finished until trying again." % self.ongoingPings[nick])
 
-	@bones.event.handler(event="CTCPPong")
+	@bones.event.handler(event=bones.event.CTCPPongEvent)
 	def eventPingResponseReceive(self, event):
 		nick = event.user.nickname
 		if nick in self.ongoingPings:
-			channel = self.ongoingPings[nick]
-			event.channel.msg("%s: Your response time was %.3f seconds." % (nick, event.secs))
+			event.user.notice("%s: Your response time was %.3f seconds." % (nick, event.secs))
 			del self.ongoingPings[nick]
 
 	#@event.handler(trigger="echo") # Provided for debuging purposes.
@@ -115,15 +120,15 @@ class fun(Module):
 		fortune = Popen("fortune", stdout=PIPE)
 		fortune_lines = fortune.communicate()[0].split("\n")
 		for line in fortune_lines:
-			reactor.callLater(i*0.2, event.channel.msg, line)
+			reactor.callLater(i*1.2, event.channel.msg, line)
 			i =+ 1
 	
 	@bones.event.handler(trigger="allo") # Same as above just using a different input file
-	def cmdFortune(self, event, i=0):
+	def cmdAlloQuotes(self, event, i=0):
 		inputfile = "allo"
-		fortune = Popen(["fortune", inputfile], stdout=PIPE)
-		lines = fortune.communicate()[0].split("\n")
-		for line in lines:
+		fortune = Popen(["fortune", os.path.join(mod_dir, "fortunes" , inputfile)], stdout=PIPE)
+		allo_lines = fortune.communicate()[0].split("\n")
+		for line in allo_lines:
 			reactor.callLater(i*0.2, event.channel.msg, line)
 			i =+ 1
 		
