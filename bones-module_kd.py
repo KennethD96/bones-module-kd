@@ -1,8 +1,9 @@
- # encoding: utf-8
+# encoding: utf-8
 import os
 import string
 import random
 import re
+import time
 
 from subprocess import Popen, PIPE
 from datetime import datetime
@@ -13,8 +14,9 @@ from bones.bot import Module
 from twisted.internet import reactor
 
 mod_dir = os.path.join(os.path.dirname(__file__), "mod_kd")
+antiflood_timeout = 2.0
 
-class general(Module):
+class basic(Module):
 
 	def __init__(self, *args, **kwargs):
 		Module.__init__(self, *args, **kwargs)
@@ -37,8 +39,9 @@ class general(Module):
 		if len(motd) > 0:
 			motd_lines = motd.split("\n")
 			for line in motd_lines:
-				reactor.callLater(i*1.5, event.channel.msg, line)
+				event.channel.msg(line)
 				i =+ 1
+				#time.sleep(antiflood_timeout)
 		else:
 			return
 
@@ -55,16 +58,16 @@ class utils(Module):
 		else:
 			formula = "".join(event.args)
 			calc = Popen("bc", stdin=PIPE, stdout=PIPE)
-			result = "".join(calc.communicate("%s\n" % formula)[0].split('\\\n'))
+			result = "".join(calc.communicate("%s\n" % formula.replace(",", "."))[0].split('\\\n'))
 			if len(result) > maxLen:
-				event.channel.msg("Result too long for chat.")
+				event.channel.msg("Result too long for chat. Protip: Try http://wolframalpha.com")
 			else:
 				if result.rstrip("\n").isdigit():
 					event.channel.msg("{0:,}".format(int(result)).replace(",", ","))
 				else:
 					event.channel.msg(result)
 
-	@bones.event.handler(trigger="ccon") # Preparing Currency Converter module.
+	@bones.event.handler(trigger="ccon") # Preparing Currency Converter.
 	def cmdCurrencyConvert(self, event):
 		return
 
@@ -120,8 +123,9 @@ class fun(Module):
 		fortune = Popen("fortune", stdout=PIPE)
 		fortune_lines = fortune.communicate()[0].split("\n")
 		for line in fortune_lines:
-			reactor.callLater(i*1.2, event.channel.msg, line)
+			event.channel.msg(line)
 			i =+ 1
+			#time.sleep(antiflood_timeout)
 	
 	@bones.event.handler(trigger="allo") # Same as above just using a different input file
 	def cmdAlloQuotes(self, event, i=0):
@@ -129,9 +133,31 @@ class fun(Module):
 		fortune = Popen(["fortune", os.path.join(mod_dir, "fortunes" , inputfile)], stdout=PIPE)
 		allo_lines = fortune.communicate()[0].split("\n")
 		for line in allo_lines:
-			reactor.callLater(i*0.2, event.channel.msg, line)
+			event.channel.msg(line)
 			i =+ 1
-		
+			#time.sleep(antiflood_timeout)
+
+	@bones.event.handler(trigger="killstreak")
+	@bones.event.handler(trigger="kill")
+	def cmdKillstreak(self, event):
+		materials = ["Wooden", "Stone", "Iron", "Golden", "Diamond"]
+		tools = ["Sword", "Pickaxe", "Axe"]
+		other = ["stick", "torch", "cake", "ahue"]
+		weapons = [random.choice(materials) + " " + random.choice(tools), random.choice(other)]
+		if event.args:
+			target = event.args[0]
+			player = event.user.nickname
+		else:
+			target = event.user.nickname
+			player = random.choice(event.channel.users).nickname
+
+		with open(os.path.join(mod_dir, "deathmessages.txt"), "r") as deathmessages:
+			deathmessage = random.choice(deathmessages.readlines()).replace("[player]", target, 1)
+			if "[player]" in deathmessage:
+				deathmessage = deathmessage.replace("[player]", player)
+			if "[weapon]" in deathmessage:
+				deathmessage = deathmessage.replace("[weapon]", random.choice(weapons))
+			event.channel.msg(deathmessage)
 
 	@bones.event.handler(event=bones.event.PrivmsgEvent)
 	def DANCE(self, event, step=0):
