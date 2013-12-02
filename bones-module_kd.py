@@ -40,9 +40,9 @@ class basic(Module):
 					manpage = manfile.read()
 					event.user.msg(manpage.rstrip("\n"))
 			else:
-				event.channel.msg("No manpage by that name.")
+				event.channel.msg("No manual entry by that name.")
 		else:
-			event.channel.msg("Please specify a manpage.")
+			event.channel.msg("Please specify a manual page.")
 
 
 
@@ -160,14 +160,19 @@ class fun(Module):
 			tools = ["Sword", "Pickaxe", "Axe"]
 			other = ["Diretide", "ahue"]
 			weapons = [random.choice(materials) + " " + random.choice(tools), random.choice(other)]
+			messagefiles = ["deathmessages.txt", "deathmessages_weapons.txt"]
 			if event.args:
 				target = event.args[0]
 				player = event.user.nickname
+				if len(event.args) >= 2:
+					if len(event.args[1]) >= 1:
+						messagefiles = ["deathmessages_weapons.txt"]
+						weapons = [event.args[1]]
 			else:
 				target = event.user.nickname
 				player = random.choice(event.channel.users).nickname
-	
-			with open(os.path.join(mod_dir, "deathmessages.txt"), "r") as deathmessages:
+
+			with open(os.path.join(mod_dir, random.choice(messagefiles)), "r") as deathmessages:
 				deathmessage = random.choice(deathmessages.readlines()).replace("[player]", target, 1)
 				if "[player]" in deathmessage:
 					deathmessage = deathmessage.replace("[player]", player)
