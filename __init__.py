@@ -159,7 +159,7 @@ class fun(Module):
 			other = ["Diretide", "ahue"]
 			weapons = [random.choice(materials) + " " + random.choice(tools), random.choice(other)]
 			messagefiles = ["deathmessages.txt", "deathmessages_weapons.txt"]
-			if event.args:
+			if len(event.args) >=1:
 				target = event.args[0]
 				player = event.user.nickname
 				if len(event.args) >= 2:
@@ -170,7 +170,7 @@ class fun(Module):
 				target = event.user.nickname
 				player = random.choice(event.channel.users).nickname
 
-			with open(os.path.join(mod_dir, random.choice(messagefiles)), "r") as deathmessages:
+			with open(os.path.join(mod_dir, "deathmessages", random.choice(messagefiles)), "r") as deathmessages:
 				deathmessage = random.choice(deathmessages.readlines()).replace("[player]", target, 1)
 				if "[player]" in deathmessage:
 					deathmessage = deathmessage.replace("[player]", player)
