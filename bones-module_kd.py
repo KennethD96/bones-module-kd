@@ -28,7 +28,23 @@ class basic(Module):
 		with open(os.path.join(mod_dir, "help.txt"), "r") as helpfile:
 			helpTxt = helpfile.read()
 		helpfile.closed
-		event.channel.msg(helpTxt.rstrip("\n"))
+		event.user.msg(helpTxt.rstrip("\n"))
+
+	@bones.event.handler(trigger="man")
+	def cmdMan(self, event):
+		if event.args:
+			manpage = event.args[0]
+			manpath = os.path.join(mod_dir, "man", manpage)
+			if os.path.exists(manpath):
+				with open(os.path.join(manpath)) as manfile:
+					manpage = manfile.read()
+					event.user.msg(manpage.rstrip("\n"))
+			else:
+				event.channel.msg("No manpage by that name.")
+		else:
+			event.channel.msg("Please specify a manpage.")
+
+
 
 	@bones.event.handler(trigger="motd")
 	@bones.event.handler(event=bones.event.UserJoinEvent)
@@ -140,24 +156,24 @@ class fun(Module):
 	@bones.event.handler(trigger="killstreak")
 	@bones.event.handler(trigger="kill")
 	def cmdKillstreak(self, event):
-		materials = ["Wooden", "Stone", "Iron", "Golden", "Diamond"]
-		tools = ["Sword", "Pickaxe", "Axe"]
-		other = ["stick", "torch", "cake", "ahue"]
-		weapons = [random.choice(materials) + " " + random.choice(tools), random.choice(other)]
-		if event.args:
-			target = event.args[0]
-			player = event.user.nickname
-		else:
-			target = event.user.nickname
-			player = random.choice(event.channel.users).nickname
-
-		with open(os.path.join(mod_dir, "deathmessages.txt"), "r") as deathmessages:
-			deathmessage = random.choice(deathmessages.readlines()).replace("[player]", target, 1)
-			if "[player]" in deathmessage:
-				deathmessage = deathmessage.replace("[player]", player)
-			if "[weapon]" in deathmessage:
-				deathmessage = deathmessage.replace("[weapon]", random.choice(weapons))
-			event.channel.msg(deathmessage)
+			materials = ["Wooden", "Stone", "Iron", "Golden", "Diamond"]
+			tools = ["Sword", "Pickaxe", "Axe"]
+			other = ["Diretide", "ahue"]
+			weapons = [random.choice(materials) + " " + random.choice(tools), random.choice(other)]
+			if event.args:
+				target = event.args[0]
+				player = event.user.nickname
+			else:
+				target = event.user.nickname
+				player = random.choice(event.channel.users).nickname
+	
+			with open(os.path.join(mod_dir, "deathmessages.txt"), "r") as deathmessages:
+				deathmessage = random.choice(deathmessages.readlines()).replace("[player]", target, 1)
+				if "[player]" in deathmessage:
+					deathmessage = deathmessage.replace("[player]", player)
+				if "[weapon]" in deathmessage:
+					deathmessage = deathmessage.replace("[weapon]", random.choice(weapons))
+				event.channel.msg(deathmessage)
 
 	@bones.event.handler(event=bones.event.PrivmsgEvent)
 	def DANCE(self, event, step=0):
