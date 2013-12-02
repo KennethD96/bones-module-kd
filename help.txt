@@ -1,0 +1,13 @@
+Basic:
+ help, h                                             This page. ＨＵＥ
+ motd                                                Displays the MOTD.
+ man (command)                                       Shows the manpage for the given command.
+Utilities:
+ calc, cc, c, bc (Equation)                          A calculator powered by UNIX bc.
+ ccon (amount) (source currency) (final currency)    A currency converter. (Coming soon..)
+ pw, password, random [String length]                Generates a random string that can be used as a password.
+ ping                                                A simple tool that measures your IRC client's CTCP Pong response time.
+Fun:
+ fortune                                             An in-chat version of the Fortune command.
+ killstreak, kill [user]                             Prints a random Death message.
+() = Required [] = Optional

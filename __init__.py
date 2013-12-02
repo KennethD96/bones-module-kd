@@ -13,7 +13,7 @@ import bones.event
 from bones.bot import Module
 from twisted.internet import reactor
 
-mod_dir = os.path.join(os.path.dirname(__file__), "mod_kd")
+mod_dir = os.path.dirname(__file__)
 antiflood_timeout = 2.0
 
 class basic(Module):
@@ -134,7 +134,7 @@ class fun(Module):
 		self.danceCooldown = {}
 		self.danceCooldownTime = None
 
-	@bones.event.handler(trigger="fortune") # Calls the UNIX "fortune" application and sends the output to the channel
+	@bones.event.handler(trigger="fortune")
 	def cmdFortune(self, event, i=0):
 		fortune = Popen("fortune", stdout=PIPE)
 		fortune_lines = fortune.communicate()[0].split("\n")
@@ -143,7 +143,7 @@ class fun(Module):
 			i =+ 1
 			#time.sleep(antiflood_timeout)
 	
-	@bones.event.handler(trigger="allo") # Same as above just using a different input file
+	@bones.event.handler(trigger="allo")
 	def cmdAlloQuotes(self, event, i=0):
 		inputfile = "allo"
 		fortune = Popen(["fortune", os.path.join(mod_dir, "fortunes" , inputfile)], stdout=PIPE)

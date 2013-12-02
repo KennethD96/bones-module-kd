@@ -1,0 +1,9 @@
+NAME
+		killstreak - A Minecraft inspired deathmessage.
+
+SYNTAX
+		killstreak, kill [User]
+
+DESCRIPTION
+		Prints a random death message starting with the users nickname
+		but can be changed by using the optional [User] argument.

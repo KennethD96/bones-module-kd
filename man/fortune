@@ -1,0 +1,9 @@
+NAME
+		fortune - print a random, hopefully interesting, adage
+
+SYNTAX
+		fortune
+
+DESCRIPTION
+		When fortune is run it prints out a random epigram. Epigrams are divided into several categories, where each category is
+		sub-divided into those which are potentially offensive and those which are not.

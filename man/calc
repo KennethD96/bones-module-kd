@@ -1,0 +1,9 @@
+NAME
+		bc - An arbitrary precision calculator language
+
+SYNTAX
+		calc, cc, c, bc (Equation)
+
+DESCRIPTION
+		A calculator based on the BC programming language.
+		This is the same as the one provided in UNIX-like operating systems.

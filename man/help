@@ -1,0 +1,9 @@
+NAME
+		Help - Displays the help.txt file.
+
+SYNTAX
+		help, h
+
+DESCRIPTION
+		Shows a list of available commands and a short description
+		provided in the help.txt file located in the module directory.

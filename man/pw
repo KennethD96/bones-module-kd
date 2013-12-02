@@ -1,0 +1,9 @@
+NAME
+		pw - Generates a random password
+
+SYNTAX
+		pw, password, random [length]
+
+DESCRIPTION
+		Generates a random password containing characters a-z, A-Z and
+		numbers 0-9.

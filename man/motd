@@ -1,0 +1,9 @@
+NAME
+		motd - Display the MOTD
+
+SYNTAX
+		motd
+
+DESCRIPTION
+		Displays the MOTD set in the motd.txt file located
+		in the mod_kd folder.
