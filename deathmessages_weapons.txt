@@ -1,4 +1,0 @@
-[player] got finished off by [player] using [weapon]
-[player] was slain by [player] using [weapon]
-[player] got finished off by [player] using [weapon]
-[player] was slain by [player] using [weapon]
