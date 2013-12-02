@@ -27,7 +27,6 @@ class basic(Module):
 	def cmdHelp(self, event):
 		with open(os.path.join(mod_dir, "help.txt"), "r") as helpfile:
 			helpTxt = helpfile.read()
-		helpfile.closed
 		event.user.msg(helpTxt.rstrip("\n"))
 
 	@bones.event.handler(trigger="man")
@@ -51,7 +50,6 @@ class basic(Module):
 	def motd(self, event, i=0):
 		with open(os.path.join(mod_dir, "motd.txt"), "r") as motdfile:
 			motd = motdfile.read()
-		motdfile.closed
 		if len(motd) > 0:
 			motd_lines = motd.split("\n")
 			for line in motd_lines:
