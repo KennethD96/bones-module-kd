@@ -165,7 +165,8 @@ class fun(Module):
 				if len(event.args) >= 2:
 					if len(event.args[1]) >= 1:
 						messagefiles = ["deathmessages_weapons.txt"]
-						weapons = [event.args[1]]
+						del event.args[0]
+						weapons = [" ".join(event.args)]
 			else:
 				target = event.user.nickname
 				player = random.choice(event.channel.users).nickname
