@@ -155,6 +155,8 @@ class fun(Module):
 	@bones.event.handler(trigger="kill")
 	def cmdKillstreak(self, event):
 			args = [arg.strip() for arg in " ".join(event.args).split(",")]
+			target = event.user.nickname
+			player = random.choice(event.channel.users).nickname
 			materials = ["Wooden", "Stone", "Iron", "Golden", "Diamond"]
 			tools = ["Sword", "Pickaxe", "Axe"]
 			other = ["Diretide", "ahue"]
@@ -162,14 +164,12 @@ class fun(Module):
 			messagefiles = ["deathmessages.txt", "deathmessages_weapons.txt"]
 			if len(event.args) >=1:
 				target = args[0]
-				player = event.user.nickname
+				if target != event.user.nickname:
+					player = event.user.nickname
 				if len(args) >= 2:
 					if len(args[1]) >= 1:
 						messagefiles = ["deathmessages_weapons.txt"]
 						weapons = [args[1]]
-			else:
-				target = event.user.nickname
-				player = random.choice(event.channel.users).nickname
 
 			with open(os.path.join(mod_dir, "deathmessages", random.choice(messagefiles)), "r") as deathmessages:
 				deathmessage = random.choice(deathmessages.readlines()).replace("[player]", target, 1)
