@@ -1,39 +1,39 @@
-[player] was squashed by a falling anvil
-[player] was pricked to death
-[player] walked into a cactus whilst trying to escape [player]
-[player] was shot by arrow
-[player] drowned
-[player] drowned whilst trying to escape [player]
-[player] blew up
-[player] was blown up by [player]
-[player] hit the ground too hard
-[player] fell from a high place
-[player] fell off a ladder
-[player] fell off some vines
-[player] fell out of the water
-[player] fell into a patch of fire
-[player] fell into a patch of cacti
-[player] was doomed to fall by [player]
-[player] was shot off some vines by [player]
-[player] was shot off a ladder by [player]
-[player] was blown from a high place by [player]
-[player] went up in flames
-[player] burned to death
-[player] was burnt to a crisp whilst fighting [player]
-[player] walked into a fire whilst fighting [player]
-[player] was slain by [player]
-[player] was fireballed by [player]
-[player] was killed by [player] using magic
-[player] tried to swim in lava
-[player] tried to swim in lava while trying to escape [player]
-[player] died
-[player] was shot by [player]
-[player] was killed by [player] using magic
-[player] was killed by magic
-[player] starved to death
-[player] suffocated in a wall
-[player] was killed while trying to hurt [player]
-[player] fell out of the world
-[player] fell from a high place and fell out of the world
-[player] was knocked into the void by [player]
-[player] withered away
+[target] was squashed by a falling anvil
+[target] was pricked to death
+[target] walked into a cactus whilst trying to escape [player]
+[target] was shot by arrow
+[target] drowned
+[target] drowned whilst trying to escape [player]
+[target] blew up
+[target] was blown up by [player]
+[target] hit the ground too hard
+[target] fell from a high place
+[target] fell off a ladder
+[target] fell off some vines
+[target] fell out of the water
+[target] fell into a patch of fire
+[target] fell into a patch of cacti
+[target] was doomed to fall by [player]
+[target] was shot off some vines by [player]
+[target] was shot off a ladder by [player]
+[target] was blown from a high place by [player]
+[target] went up in flames
+[target] burned to death
+[target] was burnt to a crisp whilst fighting [player]
+[target] walked into a fire whilst fighting [player]
+[target] was slain by [player]
+[target] was fireballed by [player]
+[target] was killed by [player] using magic
+[target] tried to swim in lava
+[target] tried to swim in lava while trying to escape [player]
+[target] died
+[target] was shot by [player]
+[target] was killed by [player] using magic
+[target] was killed by magic
+[target] starved to death
+[target] suffocated in a wall
+[target] was killed while trying to hurt [player]
+[target] fell out of the world
+[target] fell from a high place and fell out of the world
+[target] was knocked into the void by [player]
+[target] withered away

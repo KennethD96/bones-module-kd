@@ -170,9 +170,10 @@ class fun(Module):
 					if len(args[1]) >= 1:
 						messagefiles = ["deathmessages_weapons.txt"]
 						weapons = [args[1]]
-
 			with open(os.path.join(mod_dir, "deathmessages", random.choice(messagefiles)), "r") as deathmessages:
-				deathmessage = random.choice(deathmessages.readlines()).replace("[player]", target, 1)
+				deathmessage = random.choice(deathmessages.readlines())
+				if "[target]" in deathmessage:
+					deathmessage = deathmessage.replace("[target]", target)
 				if "[player]" in deathmessage:
 					deathmessage = deathmessage.replace("[player]", player)
 				if "[weapon]" in deathmessage:
