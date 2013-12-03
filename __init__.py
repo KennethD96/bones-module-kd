@@ -154,19 +154,19 @@ class fun(Module):
 	@bones.event.handler(trigger="killstreak")
 	@bones.event.handler(trigger="kill")
 	def cmdKillstreak(self, event):
+			args = [arg.strip() for arg in " ".join(event.args).split(",")]
 			materials = ["Wooden", "Stone", "Iron", "Golden", "Diamond"]
 			tools = ["Sword", "Pickaxe", "Axe"]
 			other = ["Diretide", "ahue"]
 			weapons = [random.choice(materials) + " " + random.choice(tools), random.choice(other)]
 			messagefiles = ["deathmessages.txt", "deathmessages_weapons.txt"]
 			if len(event.args) >=1:
-				target = event.args[0]
+				target = args[0]
 				player = event.user.nickname
-				if len(event.args) >= 2:
-					if len(event.args[1]) >= 1:
+				if len(args) >= 2:
+					if len(args[1]) >= 1:
 						messagefiles = ["deathmessages_weapons.txt"]
-						del event.args[0]
-						weapons = [" ".join(event.args)]
+						weapons = [args[1]]
 			else:
 				target = event.user.nickname
 				player = random.choice(event.channel.users).nickname

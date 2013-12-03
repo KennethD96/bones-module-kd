@@ -9,5 +9,5 @@ Utilities:
  ping                                                A simple tool that measures your IRC client's CTCP Pong response time.
 Fun:
  fortune                                             An in-chat version of the Fortune command.
- killstreak, kill [user]                             Prints a random Death message.
+ killstreak, kill User/Name] [(,)Weapon]             Prints a random Death message.
 () = Required [] = Optional

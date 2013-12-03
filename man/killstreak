@@ -2,7 +2,7 @@ NAME
 		killstreak - A Minecraft inspired deathmessage.
 
 SYNTAX
-		killstreak, kill [User]
+		killstreak, kill [User/Name] [(,)Weapon]
 
 DESCRIPTION
 		Prints a random death message starting with the users nickname
