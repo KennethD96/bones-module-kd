@@ -4,6 +4,7 @@ bones-module-kd
 A simple module for Bones IRC-Bot featuring:
 - Password Generator (SSL is recommended)
 - Calculator (Requires `BC` to be installed)
+- HEX/Binary/Decimal converter
 - MOTD function
 - Manual lookup (Similar to UNIX man)
 - fortune (Same as UNIX fortune. Must also be installed)

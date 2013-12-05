@@ -1,10 +1,11 @@
+Tip: Use the "Man" command to get more detailed usage information.
 Basic:
  help, h                                             This page. ＨＵＥ
  motd                                                Displays the MOTD.
  man (command)                                       Shows the manpage for the given command.
 Utilities:
  calc, cc, c, bc (Equation)                          A calculator powered by UNIX bc.
- ccon (amount) (source currency) (final currency)    A currency converter. (Coming soon..)
+ bcon, basecon [hex/bin/dec] (Numbers to convert)    A simple HEX/Binary/Decimal converter.
  pw, password, random [String length]                Generates a random string that can be used as a password.
  ping                                                A simple tool that measures your IRC client's CTCP Pong response time.
 Fun:

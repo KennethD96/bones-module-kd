@@ -120,11 +120,9 @@ class utils(Module):
 	#def cmdEcho(self, event):
 	#	event.channel.msg(" ".join(event.args))
 
-	#class converters(Module):
-
-		#@bones.event.handler(trigger="ccon") # Preparing Currency Converter.
-		#def cmdCurrencyConvert(self, event):
-		#	return
+	#@bones.event.handler(trigger="ccon") # Preparing Currency Converter.
+	#def cmdCurrencyConvert(self, event):
+	#	return
 
 	@bones.event.handler(trigger="basecon")
 	@bones.event.handler(trigger="bcon")
@@ -175,10 +173,13 @@ class utils(Module):
 				convert()
 
 			event.channel.msg("Dec: " + " ".join(out_dec))
-			#reactor.callLater(antiflood_timeout)
 			event.channel.msg("Hex: " + " ".join(out_hex).replace("0x", ""))
-			#reactor.callLater(antiflood_timeout)
-			event.channel.msg("Bin: " + " ".join(out_bin).replace("0b", ""))
+			if len("".join(out_bin)) > 128:
+				decrease = len("".join(out_bin)) - 128
+				string = " ".join(out_bin).replace("0b", "").replace('', '')[:-decrease].upper() + "..."
+			else:
+				string = " ".join(out_bin).replace("0b", "")
+			event.channel.msg("Bin: " + string)
 		else:
 			event.channel.msg("Usage: [Hex/Bin/Dec] Numbers to convert.")
 
