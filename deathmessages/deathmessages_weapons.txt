@@ -2,3 +2,4 @@
 [target] was slain by [player] using [weapon]
 [target] got finished off by [player] using [weapon]
 [target] was slain by [player] using [weapon]
+[player] strangled [target] using [weapon]

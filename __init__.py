@@ -81,10 +81,6 @@ class utils(Module):
 				else:
 					event.channel.msg(result)
 
-	@bones.event.handler(trigger="ccon") # Preparing Currency Converter.
-	def cmdCurrencyConvert(self, event):
-		return
-
 	@bones.event.handler(trigger="pw")
 	@bones.event.handler(trigger="password")
 	@bones.event.handler(trigger="random")
@@ -123,6 +119,69 @@ class utils(Module):
 	#@event.handler(trigger="echo") # Provided for debuging purposes.
 	#def cmdEcho(self, event):
 	#	event.channel.msg(" ".join(event.args))
+
+	#class converters(Module):
+
+		#@bones.event.handler(trigger="ccon") # Preparing Currency Converter.
+		#def cmdCurrencyConvert(self, event):
+		#	return
+
+	@bones.event.handler(trigger="basecon")
+	@bones.event.handler(trigger="bcon")
+	def cmdBaseConverter(self, event):
+		global out_dec, out_hex, out_bin, dec_input
+		out_dec = []
+		out_hex = []
+		out_bin = []
+		dec_input = []
+
+		if len(event.args) >= 1:
+			if event.args[0].lower().startswith(("0x", "hex")):
+				sourcebase = "hex"
+				if event.args[0].lower() == "hex":
+					del event.args[0]
+			
+			elif event.args[0].lower().startswith(("0b", "bin")):
+				sourcebase = "bin"
+				if event.args[0].lower() == "bin":
+					del event.args[0]
+			
+			elif event.args[0].lower() == "dec":
+				sourcebase = "dec"
+				del event.args[0]
+			
+			else:
+				sourcebase = "dec"
+
+			def convert():
+				for item in dec_input:
+					out_dec.append(str(item))
+					out_hex.append(hex(item))
+					out_bin.append(bin(item))
+
+			if "hex" in sourcebase:
+				for item in event.args:
+					dec_input.append(int(item, 16))
+				convert()
+			
+			elif "bin" in sourcebase:
+				for item in event.args:
+					dec_input.append(int(item, 2))
+				convert()
+			
+			elif "dec" in sourcebase:
+				for item in event.args:
+					dec_input.append(int(item))
+				convert()
+
+			event.channel.msg("Dec: " + " ".join(out_dec))
+			#reactor.callLater(antiflood_timeout)
+			event.channel.msg("Hex: " + " ".join(out_hex).replace("0x", ""))
+			#reactor.callLater(antiflood_timeout)
+			event.channel.msg("Bin: " + " ".join(out_bin).replace("0b", ""))
+		else:
+			event.channel.msg("Usage: [Hex/Bin/Dec] Numbers to convert.")
+
 
 class fun(Module):
 
