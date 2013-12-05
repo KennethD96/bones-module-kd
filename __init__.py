@@ -135,42 +135,27 @@ class utils(Module):
 
 		if len(event.args) >= 1:
 			if event.args[0].lower().startswith(("0x", "hex")):
-				sourcebase = "hex"
+				sourcebase = "16"
 				if event.args[0].lower() == "hex":
 					del event.args[0]
-			
+
 			elif event.args[0].lower().startswith(("0b", "bin")):
-				sourcebase = "bin"
+				sourcebase = "2"
 				if event.args[0].lower() == "bin":
 					del event.args[0]
-			
+
 			elif event.args[0].lower() == "dec":
-				sourcebase = "dec"
+				sourcebase = "10"
 				del event.args[0]
-			
 			else:
-				sourcebase = "dec"
+				sourcebase = "10"
 
-			def convert():
-				for item in dec_input:
-					out_dec.append(str(item))
-					out_hex.append(hex(item))
-					out_bin.append(bin(item))
-
-			if "hex" in sourcebase:
-				for item in event.args:
-					dec_input.append(int(item, 16))
-				convert()
-			
-			elif "bin" in sourcebase:
-				for item in event.args:
-					dec_input.append(int(item, 2))
-				convert()
-			
-			elif "dec" in sourcebase:
-				for item in event.args:
-					dec_input.append(int(item))
-				convert()
+			for item in event.args:
+				dec_input.append(int(item, int(sourcebase)))
+			for item in dec_input:
+				out_dec.append(str(item))
+				out_hex.append(hex(item))
+				out_bin.append(bin(item))
 
 			event.channel.msg("Dec: " + " ".join(out_dec))
 			event.channel.msg("Hex: " + " ".join(out_hex).replace("0x", ""))
