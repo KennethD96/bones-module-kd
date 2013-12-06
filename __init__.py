@@ -129,8 +129,10 @@ class utils(Module):
 	@bones.event.handler(trigger="bin")
 	@bones.event.handler(trigger="dec")
 	def cmdBaseConverter(self, event):
-		TriggerEvent = event.match.group(2).lower()
 		global out_dec, out_hex, out_bin, dec_input
+		TriggerEvent = event.match.group(2).lower()
+		hex_chars = re.compile("[a-f*]", re.I)
+		dec_chars = re.compile("[0-9]", re.I)
 		out_dec = []
 		out_hex = []
 		out_bin = []
@@ -148,16 +150,17 @@ class utils(Module):
 					sourcebase = "16"
 					if event.args[0].lower() == "hex":
 						del event.args[0]
-
 				elif event.args[0].lower().startswith(("0b", "bin")):
 					sourcebase = "2"
 					if event.args[0].lower() == "bin":
 						del event.args[0]
-
 				elif event.args[0].lower() == "dec":
 					sourcebase = "10"
 					del event.args[0]
-				else:
+				
+				elif hex_chars.search("".join(event.args)):
+					sourcebase = "16"
+				elif dec_chars.search("".join(event.args)):
 					sourcebase = "10"
 
 			for item in event.args:
