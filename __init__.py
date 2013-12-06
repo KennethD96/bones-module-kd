@@ -132,7 +132,6 @@ class utils(Module):
 		global out_dec, out_hex, out_bin, dec_input
 		TriggerEvent = event.match.group(2).lower()
 		hex_chars = re.compile("[a-f*]", re.I)
-		dec_chars = re.compile("[0-9]", re.I)
 		out_dec = []
 		out_hex = []
 		out_bin = []
@@ -160,24 +159,27 @@ class utils(Module):
 				
 				elif hex_chars.search("".join(event.args)):
 					sourcebase = "16"
-				elif dec_chars.search("".join(event.args)):
+				elif "".join(event.args).isdigit():
 					sourcebase = "10"
 
-			for item in event.args:
-				dec_input.append(int(item, int(sourcebase)))
-			for item in dec_input:
-				out_dec.append(str(item))
-				out_hex.append(hex(item))
-				out_bin.append(bin(item))
+			try:
+				for item in event.args:
+					dec_input.append(int(item, int(sourcebase)))
+				for item in dec_input:
+					out_dec.append(str(item))
+					out_hex.append(hex(item))
+					out_bin.append(bin(item))
 
-			event.channel.msg("Dec: " + " ".join(out_dec))
-			event.channel.msg("Hex: " + " ".join(out_hex).replace("0x", ""))
-			if len("".join(out_bin)) > 128:
-				decrease = len("".join(out_bin)) - 128
-				string = " ".join(out_bin).replace("0b", "").replace('', '')[:-decrease].upper() + "..."
-			else:
-				string = " ".join(out_bin).replace("0b", "")
-			event.channel.msg("Bin: " + string)
+				event.channel.msg("Dec: " + " ".join(out_dec))
+				event.channel.msg("Hex: " + " ".join(out_hex).replace("0x", ""))
+				if len("".join(out_bin)) > 128:
+					decrease = len("".join(out_bin)) - 128
+					string = " ".join(out_bin).replace("0b", "").replace('', '')[:-decrease].upper() + "..."
+				else:
+					string = " ".join(out_bin).replace("0b", "")
+				event.channel.msg("Bin: " + string)
+			except ValueError:
+				event.channel.msg("Error: Not valid number")
 		else:
 				event.channel.msg("Usage: [Hex/Bin/Dec] Numbers to convert.")
 
