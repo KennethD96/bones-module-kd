@@ -124,9 +124,12 @@ class utils(Module):
 	#def cmdCurrencyConvert(self, event):
 	#	return
 
-	@bones.event.handler(trigger="basecon")
 	@bones.event.handler(trigger="bcon")
+	@bones.event.handler(trigger="hex")
+	@bones.event.handler(trigger="bin")
+	@bones.event.handler(trigger="dec")
 	def cmdBaseConverter(self, event):
+		TriggerEvent = event.match.group(2).lower()
 		global out_dec, out_hex, out_bin, dec_input
 		out_dec = []
 		out_hex = []
@@ -134,21 +137,28 @@ class utils(Module):
 		dec_input = []
 
 		if len(event.args) >= 1:
-			if event.args[0].lower().startswith(("0x", "hex")):
+			if TriggerEvent == "hex":
 				sourcebase = "16"
-				if event.args[0].lower() == "hex":
-					del event.args[0]
-
-			elif event.args[0].lower().startswith(("0b", "bin")):
+			elif TriggerEvent == "bin":
 				sourcebase = "2"
-				if event.args[0].lower() == "bin":
-					del event.args[0]
-
-			elif event.args[0].lower() == "dec":
+			elif TriggerEvent == "dec":
 				sourcebase = "10"
-				del event.args[0]
 			else:
-				sourcebase = "10"
+				if event.args[0].lower().startswith(("0x", "hex")):
+					sourcebase = "16"
+					if event.args[0].lower() == "hex":
+						del event.args[0]
+
+				elif event.args[0].lower().startswith(("0b", "bin")):
+					sourcebase = "2"
+					if event.args[0].lower() == "bin":
+						del event.args[0]
+
+				elif event.args[0].lower() == "dec":
+					sourcebase = "10"
+					del event.args[0]
+				else:
+					sourcebase = "10"
 
 			for item in event.args:
 				dec_input.append(int(item, int(sourcebase)))
@@ -166,7 +176,7 @@ class utils(Module):
 				string = " ".join(out_bin).replace("0b", "")
 			event.channel.msg("Bin: " + string)
 		else:
-			event.channel.msg("Usage: [Hex/Bin/Dec] Numbers to convert.")
+				event.channel.msg("Usage: [Hex/Bin/Dec] Numbers to convert.")
 
 
 class fun(Module):

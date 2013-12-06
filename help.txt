@@ -5,7 +5,8 @@ Basic:
  man (command)                                       Shows the manpage for the given command.
 Utilities:
  calc, cc, c, bc (Equation)                          A calculator powered by UNIX bc.
- bcon, basecon [hex/bin/dec] (Numbers to convert)    A simple HEX/Binary/Decimal converter.
+ bcon [hex/bin/dec] (Numbers to convert)             A simple HEX/Binary/Decimal converter.
+ hex, bin, dec (Numbers to convert)                  Aliases for the above command.
  pw, password, random [String length]                Generates a random string that can be used as a password.
  ping                                                A simple tool that measures your IRC client's CTCP Pong response time.
 Fun:
