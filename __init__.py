@@ -6,7 +6,7 @@ import re
 import time
 
 from subprocess import Popen, PIPE
-from datetime import datetime
+import datetime
 
 #import logging
 import bones.event
@@ -100,25 +100,10 @@ class utils(Module):
 		else:
 			event.user.notice('Here you go: %s' % rand)
 
-	@bones.event.handler(trigger="ping")
-	def cmdPing(self, event):
-		nick = event.user.nickname
-		if nick not in self.ongoingPings:
-			self.ongoingPings[nick] = event.channel.name
-			event.user.ping()
-		else:
-			event.user.notice("Please wait until your ongoing ping in %s is finished until trying again." % self.ongoingPings[nick])
-
-	@bones.event.handler(event=bones.event.CTCPPongEvent)
-	def eventPingResponseReceive(self, event):
-		nick = event.user.nickname
-		if nick in self.ongoingPings:
-			event.user.notice("%s: Your response time was %.3f seconds." % (nick, event.secs))
-			del self.ongoingPings[nick]
-
-	#@event.handler(trigger="echo") # Provided for debuging purposes.
-	#def cmdEcho(self, event):
-	#	event.channel.msg(" ".join(event.args))
+	@bones.event.handler(trigger="tg14")
+	def timetoTG14(self, event):
+		tg14_timeleft = datetime.timedelta(0,1397631600 - time.time())
+		event.channel.msg("Det er " + str(tg14_timeleft.days) + " dager og " + str(tg14_timeleft.seconds/3600) + " timer til TG14!")
 
 	#@bones.event.handler(trigger="ccon") # Preparing Currency Converter.
 	#def cmdCurrencyConvert(self, event):
@@ -132,6 +117,8 @@ class utils(Module):
 		global out_dec, out_hex, out_bin, dec_input
 		TriggerEvent = event.match.group(2).lower()
 		hex_chars = re.compile("[a-f*]", re.I)
+		dec_chars = re.compile("[2-9*]", re.I)
+		bin_chars = re.compile("[0-1*]", re.I)
 		out_dec = []
 		out_hex = []
 		out_bin = []
@@ -156,19 +143,20 @@ class utils(Module):
 				elif event.args[0].lower() == "dec":
 					sourcebase = "10"
 					del event.args[0]
-				
+
 				elif hex_chars.search("".join(event.args)):
 					sourcebase = "16"
-				elif "".join(event.args).isdigit():
+				elif dec_chars.search("".join(event.args)):
 					sourcebase = "10"
-
+				elif bin_chars.search("".join(event.args)):
+					sourcebase = "2"
 			try:
-				for item in event.args:
-					dec_input.append(int(item, int(sourcebase)))
-				for item in dec_input:
-					out_dec.append(str(item))
-					out_hex.append(hex(item))
-					out_bin.append(bin(item))
+				for num in event.args:
+					dec_input.append(int(num, int(sourcebase)))
+				for num in dec_input:
+					out_dec.append(str(num))
+					out_hex.append(hex(num))
+					out_bin.append(bin(num))
 
 				event.channel.msg("Dec: " + " ".join(out_dec))
 				event.channel.msg("Hex: " + " ".join(out_hex).replace("0x", ""))
@@ -183,6 +171,21 @@ class utils(Module):
 		else:
 				event.channel.msg("Usage: [Hex/Bin/Dec] Numbers to convert.")
 
+	@bones.event.handler(trigger="ping")
+	def cmdPing(self, event):
+		nick = event.user.nickname
+		if nick not in self.ongoingPings:
+			self.ongoingPings[nick] = event.channel.name
+			event.user.ping()
+		else:
+			event.user.notice("Please wait until your ongoing ping in %s is finished until trying again." % self.ongoingPings[nick])
+
+	@bones.event.handler(event=bones.event.CTCPPongEvent)
+	def eventPingResponseReceive(self, event):
+		nick = event.user.nickname
+		if nick in self.ongoingPings:
+			event.user.notice("%s: Your response time was %.3f seconds." % (nick, event.secs))
+			del self.ongoingPings[nick]
 
 class fun(Module):
 
