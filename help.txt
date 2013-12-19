@@ -5,9 +5,10 @@ Basic:
  man (command)                                       Shows the manpage for the given command.
 Utilities:
  calc, cc, c, bc (Equation)                          A calculator powered by UNIX bc.
- bcon [hex/bin/dec] (Numbers to convert)             A simple HEX/Binary/Decimal converter.
+ bcon [hex/bin/dec] (Numbers to convert) [,output]   A simple HEX/Binary/Decimal converter.
  hex, bin, dec (Numbers to convert)                  Aliases for the above command.
  pw, password, random [String length]                Generates a random string that can be used as a password.
+ tg, tg14                                            Shows a countdown for The Gathering 2014.
  ping                                                A simple tool that measures your IRC client's CTCP Pong response time.
 Fun:
  fortune                                             An in-chat version of the Fortune command.

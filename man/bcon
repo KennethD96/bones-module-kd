@@ -2,7 +2,7 @@ NAME
 		bcon - HEX/BIN/DEC Converter
 
 SYNTAX
-		bcon [hex/bin/dec] (Numbers to convert)
+		bcon [hex/bin/dec] (Numbers to convert) [,output]
 		
 DESCRIPTION
 		A Base converter which can be used to convert between Hexadecimal, Binary and Decimal.

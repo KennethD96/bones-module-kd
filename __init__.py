@@ -14,6 +14,7 @@ from bones.bot import Module
 from twisted.internet import reactor
 
 mod_dir = os.path.dirname(__file__)
+arg_separator = ","
 antiflood_timeout = 2.0
 
 class basic(Module):
@@ -100,6 +101,7 @@ class utils(Module):
 		else:
 			event.user.notice('Here you go: %s' % rand)
 
+	@bones.event.handler(trigger="tg")
 	@bones.event.handler(trigger="tg14")
 	def timetoTG14(self, event):
 		tg14_timeleft = datetime.timedelta(0,1397631600 - time.time())
@@ -151,6 +153,10 @@ class utils(Module):
 				elif bin_chars.search("".join(event.args)):
 					sourcebase = "2"
 			try:
+				args = [arg.strip() for arg in " ".join(event.args).split(arg_separator)]
+				if len(args) > 1:
+					event.args = [arg.strip() for arg in args[0].split(" ")]
+
 				for num in event.args:
 					dec_input.append(int(num, int(sourcebase)))
 				for num in dec_input:
@@ -158,14 +164,26 @@ class utils(Module):
 					out_hex.append(hex(num))
 					out_bin.append(bin(num))
 
-				event.channel.msg("Dec: " + " ".join(out_dec))
-				event.channel.msg("Hex: " + " ".join(out_hex).replace("0x", ""))
+				dec_out = "Dec: " + " ".join(out_dec)
+				hex_out = "Hex: " + " ".join(out_hex).replace("0x", "")
 				if len("".join(out_bin)) > 128:
 					decrease = len("".join(out_bin)) - 128
 					string = " ".join(out_bin).replace("0b", "").replace('', '')[:-decrease].upper() + "..."
 				else:
 					string = " ".join(out_bin).replace("0b", "")
-				event.channel.msg("Bin: " + string)
+				bin_out = "Bin: " + string
+
+				if len(args) > 1:
+					if args[1].lower().startswith(("dec", "10")):
+						event.channel.msg(dec_out)
+					elif args[1].lower().startswith(("hex", "16")):
+						event.channel.msg(hex_out)
+					elif args[1].lower().startswith(("bin", "2")):
+						event.channel.msg(bin_out)
+				else:
+					event.channel.msg(dec_out)
+					event.channel.msg(hex_out)
+					event.channel.msg(bin_out)
 			except ValueError:
 				event.channel.msg("Error: Not valid number")
 		else:
@@ -217,7 +235,7 @@ class fun(Module):
 	@bones.event.handler(trigger="killstreak")
 	@bones.event.handler(trigger="kill")
 	def cmdKillstreak(self, event):
-			args = [arg.strip() for arg in " ".join(event.args).split(",")]
+			args = [arg.strip() for arg in " ".join(event.args).split(arg_separator)]
 			target = event.user.nickname
 			player = random.choice(event.channel.users).nickname
 			materials = ["Wooden", "Stone", "Iron", "Golden", "Diamond"]
@@ -252,13 +270,13 @@ class fun(Module):
 			if step == 0:
 				if event.channel.name in self.danceCooldown:
 					last = self.danceCooldown[event.channel.name]
-					now = datetime.utcnow()
+					now = datetime.datetime.utcnow()
 					delta = now - last
 					if delta.seconds < self.danceCooldownTime:
 						wait = self.danceCooldownTime - delta.seconds
 						event.user.notice("Please wait %s more seconds." % wait)
 						return
-				self.danceCooldown[event.channel.name] = datetime.utcnow()
+				self.danceCooldown[event.channel.name] = datetime.datetime.utcnow()
 				event.client.ctcpMakeQuery(event.channel.name, [('ACTION', "dances")])
 				reactor.callLater(1.5, self.DANCE, event, step=1)
 			elif step == 1:
