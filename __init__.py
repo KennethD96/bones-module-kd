@@ -8,14 +8,27 @@ import time
 from subprocess import Popen, PIPE
 import datetime
 
-#import logging
 import bones.event
 from bones.bot import Module
 from twisted.internet import reactor
 
 mod_dir = os.path.dirname(__file__)
 arg_separator = ","
-antiflood_timeout = 2.0
+
+def msg(event, string1, string2=False):
+	prefix = "\x0312[KD]"
+	if string2 != False:
+		event.channel.msg(prefix + "\x0315" + string1 + "\x0300" + string2)
+	else:
+		event.channel.msg(prefix + "\x03 " + string1)
+
+def error(event, string):
+	errPrefix = "\x034[Error]\x03 "
+	event.channel.msg(errPrefix + string)
+
+def warn(event, string):
+	warnPrefix = "\x038[Warning]\x03 "
+	event.channel.msg(warnPrefix + string)
 
 class basic(Module):
 
@@ -40,11 +53,9 @@ class basic(Module):
 					manpage = manfile.read()
 					event.user.msg(manpage.rstrip("\n"))
 			else:
-				event.channel.msg("No manual entry by that name.")
+				warn(event, "No manual entry by that name.")
 		else:
-			event.channel.msg("Please specify a manual page.")
-
-
+			warn(event, "Please specify a manual page.")
 
 	@bones.event.handler(trigger="motd")
 	@bones.event.handler(event=bones.event.UserJoinEvent)
@@ -54,13 +65,15 @@ class basic(Module):
 		if len(motd) > 0:
 			motd_lines = motd.split("\n")
 			for line in motd_lines:
-				event.channel.msg(line)
+				msg(event, line)
 				i =+ 1
-				#time.sleep(antiflood_timeout)
 		else:
 			return
 
 class utils(Module):
+	def __init__(self, *args, **kwargs):
+		Module.__init__(self, *args, **kwargs)
+		self.ongoingPings = {}
 
 	@bones.event.handler(trigger="calc")
 	@bones.event.handler(trigger="cc")
@@ -69,18 +82,18 @@ class utils(Module):
 	def cmdCalc(self, event):
 		maxLen = 512
 		if not event.args:
-			event.channel.msg("Please provide a equation")
+			msg(event, "Please provide a equation")
 		else:
 			formula = "".join(event.args)
 			calc = Popen("bc", stdin=PIPE, stdout=PIPE)
 			result = "".join(calc.communicate("%s\n" % formula.replace(",", "."))[0].split('\\\n'))
 			if len(result) > maxLen:
-				event.channel.msg("Result too long for chat. Protip: Try http://wolframalpha.com")
+				warn(event, "Result too long for chat. Protip: Try http://wolframalpha.com")
 			else:
 				if result.rstrip("\n").isdigit():
-					event.channel.msg("{0:,}".format(int(result)).replace(",", ","))
+					msg(event, "{0:,}".format(int(result)).replace(",", ","))
 				else:
-					event.channel.msg(result)
+					msg(event, result)
 
 	@bones.event.handler(trigger="pw")
 	@bones.event.handler(trigger="password")
@@ -92,7 +105,7 @@ class utils(Module):
 		rand = "".join(random.choice(chars) for x in range(tArgs))
 		if len(event.args) > 0:
 			if int(event.args[0]) > int(maxLen):
-				event.channel.msg("Length must be a valid number between 1 and 256!")
+				warn(event, "Length must be a valid number between 1 and 256!")
 			else:
 				tArgs = int(event.args[0])
 				tArgs = max(1, min(tArgs, maxLen))
@@ -105,7 +118,7 @@ class utils(Module):
 	@bones.event.handler(trigger="tg14")
 	def timetoTG14(self, event):
 		tg14_timeleft = datetime.timedelta(0,1397631600 - time.time())
-		event.channel.msg("Det er " + str(tg14_timeleft.days) + " dager og " + str(tg14_timeleft.seconds/3600) + " timer til TG14!")
+		msg(event, "Det er\x039 " + str(tg14_timeleft.days) + "\x03 dager og\x039 " + str(tg14_timeleft.seconds/3600) + "\x03 timer til \x0312TG14\x03!")
 
 	#@bones.event.handler(trigger="ccon") # Preparing Currency Converter.
 	#def cmdCurrencyConvert(self, event):
@@ -117,6 +130,10 @@ class utils(Module):
 	@bones.event.handler(trigger="dec")
 	def cmdBaseConverter(self, event):
 		global out_dec, out_hex, out_bin, dec_input
+		args = [arg.strip() for arg in " ".join(event.args).split(arg_separator)]
+		if len(args) > 1:
+			event.args = [arg.strip() for arg in args[0].split(" ")]
+			
 		TriggerEvent = event.match.group(2).lower()
 		hex_chars = re.compile("[a-f*]", re.I)
 		dec_chars = re.compile("[2-9*]", re.I)
@@ -124,6 +141,7 @@ class utils(Module):
 		out_dec = []
 		out_hex = []
 		out_bin = []
+		out_ascii = []
 		dec_input = []
 
 		if len(event.args) >= 1:
@@ -153,9 +171,6 @@ class utils(Module):
 				elif bin_chars.search("".join(event.args)):
 					sourcebase = "2"
 			try:
-				args = [arg.strip() for arg in " ".join(event.args).split(arg_separator)]
-				if len(args) > 1:
-					event.args = [arg.strip() for arg in args[0].split(" ")]
 
 				for num in event.args:
 					dec_input.append(int(num, int(sourcebase)))
@@ -163,31 +178,38 @@ class utils(Module):
 					out_dec.append(str(num))
 					out_hex.append(hex(num))
 					out_bin.append(bin(num))
+					if len(args) > 1:	
+						if args[1].lower().startswith(("ascii", "txt")):
+							out_ascii.append(hex(num).replace("0x", "").decode("hex"))
 
-				dec_out = "Dec: " + " ".join(out_dec)
-				hex_out = "Hex: " + " ".join(out_hex).replace("0x", "")
+				dec_out = " ".join(out_dec)
+				hex_out = " ".join(out_hex).replace("0x", "")
 				if len("".join(out_bin)) > 128:
 					decrease = len("".join(out_bin)) - 128
 					string = " ".join(out_bin).replace("0b", "").replace('', '')[:-decrease].upper() + "..."
 				else:
 					string = " ".join(out_bin).replace("0b", "")
-				bin_out = "Bin: " + string
+				bin_out = string
 
 				if len(args) > 1:
 					if args[1].lower().startswith(("dec", "10")):
-						event.channel.msg(dec_out)
+						msg(event, "[Dec] ", dec_out)
 					elif args[1].lower().startswith(("hex", "16")):
-						event.channel.msg(hex_out)
+						msg(event, "[Hex] ", hex_out)
 					elif args[1].lower().startswith(("bin", "2")):
-						event.channel.msg(bin_out)
+						msg(event, "[Bin] ", bin_out)
+					elif args[1].lower().startswith(("ascii", "txt")):
+						msg(event, "[TXT] ", "".join(out_ascii))
 				else:
-					event.channel.msg(dec_out)
-					event.channel.msg(hex_out)
-					event.channel.msg(bin_out)
+					msg(event, "[Dec] ", dec_out)
+					msg(event, "[Hex] ", hex_out)
+					msg(event, "[Bin] ", bin_out)
 			except ValueError:
-				event.channel.msg("Error: Not valid number")
+				error(event, "Invalid number")
+			except TypeError:
+				error(event, "Invalid input")
 		else:
-				event.channel.msg("Usage: [Hex/Bin/Dec] Numbers to convert.")
+			warn(event, "Usage: [Hex/Bin/Dec] Numbers to convert.")
 
 	@bones.event.handler(trigger="ping")
 	def cmdPing(self, event):
@@ -218,9 +240,8 @@ class fun(Module):
 		fortune = Popen("fortune", stdout=PIPE)
 		fortune_lines = fortune.communicate()[0].split("\n")
 		for line in fortune_lines:
-			event.channel.msg(line)
+			msg(event, line)
 			i =+ 1
-			#time.sleep(antiflood_timeout)
 	
 	@bones.event.handler(trigger="allo")
 	def cmdAlloQuotes(self, event, i=0):
@@ -228,9 +249,8 @@ class fun(Module):
 		fortune = Popen(["fortune", os.path.join(mod_dir, "fortunes" , inputfile)], stdout=PIPE)
 		allo_lines = fortune.communicate()[0].split("\n")
 		for line in allo_lines:
-			event.channel.msg(line)
+			msg(event, line)
 			i =+ 1
-			#time.sleep(antiflood_timeout)
 
 	@bones.event.handler(trigger="killstreak")
 	@bones.event.handler(trigger="kill")
@@ -259,7 +279,7 @@ class fun(Module):
 					deathmessage = deathmessage.replace("[player]", player)
 				if "[weapon]" in deathmessage:
 					deathmessage = deathmessage.replace("[weapon]", random.choice(weapons))
-				event.channel.msg(deathmessage)
+				msg(event, deathmessage)
 
 	@bones.event.handler(event=bones.event.PrivmsgEvent)
 	def DANCE(self, event, step=0):
