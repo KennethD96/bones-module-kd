@@ -8,4 +8,4 @@ DESCRIPTION
 		A Base converter which can be used to convert between Hexadecimal, Binary and Decimal.
 		First argument should contain the common name for the base unless the number starts with a prefix
 		E.g 0x = Hex, 0b = Binary, Nothing = Decimal
-		The command will return a conversion list of all the Bases.
+		The command will return a conversion-list of all the Bases.

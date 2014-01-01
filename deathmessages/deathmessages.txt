@@ -1,4 +1,5 @@
 [target] was squashed by a falling anvil
+[target] was squashed by [player]
 [target] was pricked to death
 [target] walked into a cactus whilst trying to escape [player]
 [target] was shot by arrow

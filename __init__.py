@@ -17,10 +17,11 @@ arg_separator = ","
 
 def msg(event, string1, string2=False):
 	prefix = "\x0312[KD]"
-	if string2 != False:
-		event.channel.msg(prefix + "\x0315" + string1 + "\x0300" + string2)
-	else:
-		event.channel.msg(prefix + "\x03 " + string1)
+	if len(string1.strip("\n")) >= 1:
+		if string2 != False:
+			event.channel.msg(str(prefix + "\x0315" + string1 + "\x0300" + string2))
+		else:
+			event.channel.msg(str(prefix + "\x03 " + string1))
 
 def error(event, string):
 	errPrefix = "\x034[Error]\x03 "
@@ -31,7 +32,6 @@ def warn(event, string):
 	event.channel.msg(warnPrefix + string)
 
 class basic(Module):
-
 	def __init__(self, *args, **kwargs):
 		Module.__init__(self, *args, **kwargs)
 		self.motdOnUserJoin = True
@@ -86,14 +86,15 @@ class utils(Module):
 		else:
 			formula = "".join(event.args)
 			calc = Popen("bc", stdin=PIPE, stdout=PIPE)
-			result = "".join(calc.communicate("%s\n" % formula.replace(",", "."))[0].split('\\\n'))
+			result = "".join(calc.communicate("%s\n" % formula.replace(",", "."))[0].split('\\\n')).split("\n")
 			if len(result) > maxLen:
 				warn(event, "Result too long for chat. Protip: Try http://wolframalpha.com")
 			else:
-				if result.rstrip("\n").isdigit():
-					msg(event, "{0:,}".format(int(result)).replace(",", ","))
-				else:
-					msg(event, result)
+				for line in result:
+					if line.rstrip("\n").isdigit():
+						msg(event, "{0:,}".format(int(line)).replace(",", ","))
+					else:
+						msg(event, line)
 
 	@bones.event.handler(trigger="pw")
 	@bones.event.handler(trigger="password")
@@ -171,7 +172,6 @@ class utils(Module):
 				elif bin_chars.search("".join(event.args)):
 					sourcebase = "2"
 			try:
-
 				for num in event.args:
 					dec_input.append(int(num, int(sourcebase)))
 				for num in dec_input:
@@ -228,12 +228,21 @@ class utils(Module):
 			del self.ongoingPings[nick]
 
 class fun(Module):
-
 	def __init__(self, *args, **kwargs):
 		Module.__init__(self, *args, **kwargs)
-
 		self.danceCooldown = {}
 		self.danceCooldownTime = None
+	#	self.ongoingCount = False
+
+	#@bones.event.handler(trigger="countdown")
+	#def ny2k14(self, event):
+	#	if self.ongoingCount == False:
+	#		self.ongoingCount = True
+	#		wait_time = 1388530800 - int(time.time())
+	#		#wait_time = int(time.time() + 10) - int(time.time())
+	#		reactor.callLater(wait_time, msg, event, "Godt Nyttår! \x039:D")
+	#	else:
+	#		warn(event, "Countdown already initiated!")
 
 	@bones.event.handler(trigger="fortune")
 	def cmdFortune(self, event, i=0):
@@ -260,11 +269,12 @@ class fun(Module):
 			player = random.choice(event.channel.users).nickname
 			materials = ["Wooden", "Stone", "Iron", "Golden", "Diamond"]
 			tools = ["Sword", "Pickaxe", "Axe"]
-			other = ["Diretide", "ahue"]
+			other = ["Diretide", "ahue", "Java™"]
 			weapons = [random.choice(materials) + " " + random.choice(tools), random.choice(other)]
 			messagefiles = ["deathmessages.txt", "deathmessages_weapons.txt"]
 			if len(event.args) >=1:
-				target = args[0]
+				if len(args[0].strip(" ")) >= 1:
+					target = args[0]
 				if target != event.user.nickname:
 					player = event.user.nickname
 				if len(args) >= 2:
