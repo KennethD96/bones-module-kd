@@ -4,9 +4,8 @@ import string
 import random
 import re
 import time
-
-from subprocess import Popen, PIPE
 import datetime
+from subprocess import Popen, PIPE
 
 import bones.event
 from bones.bot import Module
@@ -14,6 +13,7 @@ from twisted.internet import reactor
 
 mod_dir = os.path.dirname(__file__)
 arg_separator = ","
+bot_admin = "KennethD"
 
 def msg(event, string1, string2=False):
 	prefix = "\x0312[KD]"
@@ -22,27 +22,27 @@ def msg(event, string1, string2=False):
 			event.channel.msg(str(prefix + "\x0315" + string1 + "\x0300" + string2))
 		else:
 			event.channel.msg(str(prefix + "\x03 " + string1))
-
+			
 def error(event, string):
 	errPrefix = "\x034[Error]\x03 "
 	event.channel.msg(errPrefix + string)
-
+	
 def warn(event, string):
 	warnPrefix = "\x038[Warning]\x03 "
 	event.channel.msg(warnPrefix + string)
-
+	
 class basic(Module):
 	def __init__(self, *args, **kwargs):
 		Module.__init__(self, *args, **kwargs)
 		self.motdOnUserJoin = True
-
+		
 	@bones.event.handler(trigger="help")
 	@bones.event.handler(trigger="h")
 	def cmdHelp(self, event):
 		with open(os.path.join(mod_dir, "help.txt"), "r") as helpfile:
 			helpTxt = helpfile.read()
 		event.user.msg(helpTxt.rstrip("\n"))
-
+		
 	@bones.event.handler(trigger="man")
 	def cmdMan(self, event):
 		if event.args:
@@ -56,7 +56,7 @@ class basic(Module):
 				warn(event, "No manual entry by that name.")
 		else:
 			warn(event, "Please specify a manual page.")
-
+			
 	@bones.event.handler(trigger="motd")
 	@bones.event.handler(event=bones.event.UserJoinEvent)
 	def motd(self, event, i=0):
@@ -67,38 +67,41 @@ class basic(Module):
 			for line in motd_lines:
 				msg(event, line)
 				i =+ 1
-		else:
-			return
-
+				
 class utils(Module):
 	def __init__(self, *args, **kwargs):
 		Module.__init__(self, *args, **kwargs)
 		self.ongoingPings = {}
-
+		
 	@bones.event.handler(trigger="calc")
 	@bones.event.handler(trigger="cc")
-	@bones.event.handler(trigger="c")
-	@bones.event.handler(trigger="bc")
 	def cmdCalc(self, event):
-		maxLen = 512
+		maxLen = 275
 		if not event.args:
 			msg(event, "Please provide a equation")
 		else:
-			formula = "".join(event.args)
 			calc = Popen("bc", stdin=PIPE, stdout=PIPE)
-			result = "".join(calc.communicate("%s\n" % formula.replace(",", "."))[0].split('\\\n')).split("\n")
-			if len(result) > maxLen:
-				warn(event, "Result too long for chat. Protip: Try http://wolframalpha.com")
-			else:
-				for line in result:
+			calc_input = "".join(event.args).lower()
+			
+			if "pi" in calc_input:
+				calc_input = calc_input.replace("pi", "3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679")
+			if "c" in calc_input:
+				calc_input = calc_input.replace("c", "299792458")
+			if "mathias" in calc_input:
+				calc_input = calc_input.replace("mathias", "666")
+			
+			result = "".join(calc.communicate("%s\n" % calc_input.replace(",", "."))[0].split('\\\n')).split("\n")
+			for line in result:
+				if len(line) > maxLen:
+					warn(event, "Result too long for chat. Protip: Try http://wolframalpha.com")
+				else:
 					if line.rstrip("\n").isdigit():
 						msg(event, "{0:,}".format(int(line)).replace(",", ","))
 					else:
 						msg(event, line)
-
+						
 	@bones.event.handler(trigger="pw")
 	@bones.event.handler(trigger="password")
-	@bones.event.handler(trigger="random")
 	def cmdPW(self, event):
 		maxLen = 256
 		tArgs = 16
@@ -114,17 +117,16 @@ class utils(Module):
 				event.user.notice('Here you go: %s' % rand)
 		else:
 			event.user.notice('Here you go: %s' % rand)
-
+			
 	@bones.event.handler(trigger="tg")
 	@bones.event.handler(trigger="tg14")
 	def timetoTG14(self, event):
 		tg14_timeleft = datetime.timedelta(0,1397631600 - time.time())
 		msg(event, "Det er\x039 " + str(tg14_timeleft.days) + "\x03 dager og\x039 " + str(tg14_timeleft.seconds/3600) + "\x03 timer til \x0312TG14\x03!")
-
+		
 	#@bones.event.handler(trigger="ccon") # Preparing Currency Converter.
 	#def cmdCurrencyConvert(self, event):
-	#	return
-
+	
 	@bones.event.handler(trigger="bcon")
 	@bones.event.handler(trigger="hex")
 	@bones.event.handler(trigger="bin")
@@ -144,7 +146,7 @@ class utils(Module):
 		out_bin = []
 		out_ascii = []
 		dec_input = []
-
+		
 		if len(event.args) >= 1:
 			if TriggerEvent == "hex":
 				sourcebase = "16"
@@ -164,7 +166,7 @@ class utils(Module):
 				elif event.args[0].lower() == "dec":
 					sourcebase = "10"
 					del event.args[0]
-
+					
 				elif hex_chars.search("".join(event.args)):
 					sourcebase = "16"
 				elif dec_chars.search("".join(event.args)):
@@ -181,7 +183,7 @@ class utils(Module):
 					if len(args) > 1:	
 						if args[1].lower().startswith(("ascii", "txt")):
 							out_ascii.append(hex(num).replace("0x", "").decode("hex"))
-
+							
 				dec_out = " ".join(out_dec)
 				hex_out = " ".join(out_hex).replace("0x", "")
 				if len("".join(out_bin)) > 128:
@@ -190,7 +192,7 @@ class utils(Module):
 				else:
 					string = " ".join(out_bin).replace("0b", "")
 				bin_out = string
-
+				
 				if len(args) > 1:
 					if args[1].lower().startswith(("dec", "10")):
 						msg(event, "[Dec] ", dec_out)
@@ -200,6 +202,8 @@ class utils(Module):
 						msg(event, "[Bin] ", bin_out)
 					elif args[1].lower().startswith(("ascii", "txt")):
 						msg(event, "[TXT] ", "".join(out_ascii))
+					else:
+						warn(event, "Unknown output")
 				else:
 					msg(event, "[Dec] ", dec_out)
 					msg(event, "[Hex] ", hex_out)
@@ -210,7 +214,7 @@ class utils(Module):
 				error(event, "Invalid input")
 		else:
 			warn(event, "Usage: [Hex/Bin/Dec] Numbers to convert.")
-
+			
 	@bones.event.handler(trigger="ping")
 	def cmdPing(self, event):
 		nick = event.user.nickname
@@ -219,21 +223,21 @@ class utils(Module):
 			event.user.ping()
 		else:
 			event.user.notice("Please wait until your ongoing ping in %s is finished until trying again." % self.ongoingPings[nick])
-
+			
 	@bones.event.handler(event=bones.event.CTCPPongEvent)
 	def eventPingResponseReceive(self, event):
 		nick = event.user.nickname
 		if nick in self.ongoingPings:
 			event.user.notice("%s: Your response time was %.3f seconds." % (nick, event.secs))
 			del self.ongoingPings[nick]
-
+			
 class fun(Module):
 	def __init__(self, *args, **kwargs):
 		Module.__init__(self, *args, **kwargs)
 		self.danceCooldown = {}
 		self.danceCooldownTime = None
 	#	self.ongoingCount = False
-
+	
 	#@bones.event.handler(trigger="countdown")
 	#def ny2k14(self, event):
 	#	if self.ongoingCount == False:
@@ -243,7 +247,7 @@ class fun(Module):
 	#		reactor.callLater(wait_time, msg, event, "Godt Nyttår! \x039:D")
 	#	else:
 	#		warn(event, "Countdown already initiated!")
-
+	
 	@bones.event.handler(trigger="fortune")
 	def cmdFortune(self, event, i=0):
 		fortune = Popen("fortune", stdout=PIPE)
@@ -260,7 +264,7 @@ class fun(Module):
 		for line in allo_lines:
 			msg(event, line)
 			i =+ 1
-
+			
 	@bones.event.handler(trigger="killstreak")
 	@bones.event.handler(trigger="kill")
 	def cmdKillstreak(self, event):
@@ -290,7 +294,13 @@ class fun(Module):
 				if "[weapon]" in deathmessage:
 					deathmessage = deathmessage.replace("[weapon]", random.choice(weapons))
 				msg(event, deathmessage)
-
+				
+	@bones.event.handler(event=bones.event.PrivmsgEvent)
+	def randomStringTriggers(self, event):
+		msg = re.sub("\x02|\x1f|\x1d|\x16|\x0f|\x03\d{0,2}(,\d{0,2})?", "", event.msg)
+		if msg.startswith(":>") and event.user.nickname == bot_admin:
+			event.channel.msg(":>")
+			
 	@bones.event.handler(event=bones.event.PrivmsgEvent)
 	def DANCE(self, event, step=0):
 		msg = re.sub("\x02|\x1f|\x1d|\x16|\x0f|\x03\d{0,2}(,\d{0,2})?", "", event.msg)

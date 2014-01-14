@@ -2,7 +2,7 @@ NAME
 		bc - An arbitrary precision calculator language
 
 SYNTAX
-		calc, cc, c, bc (Equation)
+		calc, cc (Equation)
 
 DESCRIPTION
 		A calculator based on the BC programming language.
