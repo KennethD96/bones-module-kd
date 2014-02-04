@@ -1,8 +1,8 @@
 # encoding: utf-8
 
 module_name = "bones-module-kd"
-module_version = "v0.0.1a"
-module_date = "30.Jan 2014 00:15"
+module_version = "v0.0.2-dev"
+module_date = "31.Jan 2014 11:06"
 
 import os
 import string, random
@@ -32,11 +32,11 @@ def msg(event, string1, string2=False):
 		if string2 != False:
 			for line in string2.split("\n"):
 				if len(line) != 0:
-					event.channel.msg("%s\x0315[%s]\x03 %s" % (prefix, string1, line))
+					event("%s\x0315[%s]\x03 %s" % (prefix, string1, line))
 		else:
 			for line in string1.split("\n"):
 				if len(line) != 0:
-					event.channel.msg("%s\x03 %s" % (prefix, line))
+					event("%s\x03 %s" % (prefix, line))
 
 def error(event, string):
 	errPrefix = "\x034[Error]\x03 "

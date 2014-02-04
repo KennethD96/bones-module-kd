@@ -19,18 +19,18 @@ class triggers(Module):
 			fortune = Popen("fortune", stdout=PIPE)
 			fortune_lines = fortune.communicate()[0].split("\n")
 			for line in fortune_lines:
-				msg(event, line)
+				msg(event.channel.msg, line)
 		except OSError:
 			logger.error("Could not fetch Fortune, is it installed?")
 		
 	@bones.event.handler(trigger="allo")
 	def cmdAlloQuotes(self, event):
-		try:	
+		try:
 			inputfile = "allo"
 			fortune = Popen(["fortune", os.path.join(etc_path, "fortunes" , inputfile)], stdout=PIPE)
 			allo_lines = fortune.communicate()[0].split("\n")
 			for line in allo_lines:
-				msg(event, line)
+				msg(event.channel.msg, line)
 		except OSError:
 			logger.error("Could not fetch Fortune, is it installed?")
 		
@@ -63,7 +63,7 @@ class triggers(Module):
 					deathmessage = deathmessage.replace("[player]", player)
 				if "[weapon]" in deathmessage:
 					deathmessage = deathmessage.replace("[weapon]", random.choice(weapons))
-				msg(event, deathmessage)
+				msg(event.channel.msg, deathmessage)
 
 class responses(Module):
 	def __init__(self, *args, **kwargs):

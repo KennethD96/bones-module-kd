@@ -11,7 +11,7 @@ class core(Module):
 
 	@bones.event.handler(trigger="kdver")
 	def return_ver(self, event):
-		msg(event, "INFO", "%s \x0309%s \x0312(%s)" % 
+		msg(event.channel.msg, "INFO", "%s \x0309%s \x0312(%s)" % 
 		(
 			module_name, module_version, module_date
 		))
@@ -19,10 +19,10 @@ class core(Module):
 			arg = event.args[0].lower()
 			
 			if arg == "debug":
-				msg(event, "INFO", "System time:\x0309 %s" % (time.ctime()))
+				msg(event.channel.msg, "INFO", "System time:\x0309 %s" % (time.ctime()))
 			if arg == "info" or arg == "debug":
-				msg(event, "INFO", "Running \x0309%s %s\x0300 on \x0309%s" % 
+				msg(event.channel.msg, "INFO", "Running \x0309%s %s\x0300 on \x0309%s" % 
 				(
 					platform.python_implementation(), platform.python_version(), platform.node()
 				))
-				msg(event, "INFO", "OS: \x0312%s %s" % (platform.system(), platform.release()))
+				msg(event.channel.msg, "INFO", "OS: \x0312%s %s" % (platform.system(), platform.release()))

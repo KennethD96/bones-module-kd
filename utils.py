@@ -21,29 +21,50 @@ class math(Module):
 		constants = {
 			"c":"299792458",
 			"k":"000",
-		 	"pi":"3.1415926535897932"
+			"pi":"3.1415926535897932"
 		}
 		if not event.args:
-			msg(event, "Please provide a equation")
+			msg(event.channel.msg, "Please provide a equation")
 		else:
 			try:
 				calc = Popen("bc", stdin=PIPE, stdout=PIPE)
 				calc_input = "".join(event.args).lower().replace(",", ".")
 				for wrd, value in constants.iteritems():
-					calc_input = calc_input.replace(wrd, value)
+					if wrd in calc_input:
+						calc_input = calc_input.replace(wrd, value)
 				
 				result = "".join(calc.communicate("%s\n" % calc_input)[0].split('\\\n')).split("\n")
-				#msg(event, prefix, "input= %s" % (calc_input))
+				msg(event.channel.msg, prefix, "input: %s" % (calc_input))
 				for line in result:
 					if len(line) > maxLen:
 						warn(event, "Result too long for chat. Protip: Try http://wolframalpha.com")
 					else:
 						if line.rstrip("\n").isdigit():
-							msg(event, prefix, "{0:,}".format(int(line)).replace(",", ",").strip("\n"))
+							msg(event.channel.msg, prefix, "{0:,}".format(int(line)).replace(",", ",").strip("\n"))
 						else:
-							msg(event, prefix, line)
+							msg(event.channel.msg, prefix, line)
 			except OSError:
 				logger.error("Could not fetch BC, is it installed?")
+		
+	@bones.event.handler(trigger="ccon")
+	def CurrencyConvert(self, event):
+		api_url = "https://www.dnb.no/portalfront/datafiles/miscellaneous/csv/kursliste_ws.xml"
+		cachepath = os.path.join(cache_path, "currency_db.xml.cache")
+		last_update = datetime.datetime(1970,1,1)
+		db_update = datetime.datetime(today.year, today.month, today.day, 9)
+		
+		if last_update < db_update and datetime.datetime.now() > db_update:
+			try:
+				data = urlopener.open(api_url).read()
+				with open(cachepath, "w") as cachefile:
+					cachefile.write(data)
+			except:
+				data = open(cachepath, "r").read()
+				logger.warn("Could not download currency database")
+			logger.info("Currency database successfully updated!")
+			last_update = datetime.datetime.now()
+		else:
+			data = open(cachepath, "r").read()
 
 	@bones.event.handler(trigger="bcon")
 	@bones.event.handler(trigger="hex")
@@ -111,19 +132,19 @@ class math(Module):
 				
 				if len(args) > 1:
 					if args[1].lower().startswith(("dec", "10")):
-						msg(event, "Dec", dec_out)
+						msg(event.channel.msg, "Dec", dec_out)
 					elif args[1].lower().startswith(("hex", "16")):
-						msg(event, "Hex", hex_out)
+						msg(event.channel.msg, "Hex", hex_out)
 					elif args[1].lower().startswith(("bin", "2")):
-						msg(event, "Bin", bin_out)
+						msg(event.channel.msg, "Bin", bin_out)
 					elif args[1].lower().startswith(("ascii", "txt")):
-						msg(event, "TXT", "".join(out_ascii))
+						msg(event.channel.msg, "TXT", "".join(out_ascii))
 					else:
 						warn(event, "Unknown output")
 				else:
-					msg(event, "Dec", dec_out)
-					msg(event, "Hex", hex_out)
-					msg(event, "Bin", bin_out)
+					msg(event.channel.msg, "Dec", dec_out)
+					msg(event.channel.msg, "Hex", hex_out)
+					msg(event.channel.msg, "Bin", bin_out)
 			except ValueError:
 				error(event, "Invalid number")
 			except TypeError:
@@ -158,7 +179,7 @@ class misc(Module):
 	@bones.event.handler(trigger="tg14")
 	def timetoTG14(self, event):
 		tg14_timeleft = (datetime.datetime(2014,04,16,9) - datetime.datetime.now())
-		msg(event, "Det er\x039 " + str(tg14_timeleft.days) + "\x03 dager og\x039 " + str(tg14_timeleft.seconds//3600) + "\x03 timer til \x0312TG14\x03!")
+		msg(event.channel.msg, "Det er\x039 " + str(tg14_timeleft.days) + "\x03 dager og\x039 " + str(tg14_timeleft.seconds//3600) + "\x03 timer til \x0312TG14\x03!")
 			
 	@bones.event.handler(trigger="ping")
 	def cmdPing(self, event):
