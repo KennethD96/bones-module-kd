@@ -1,8 +1,8 @@
 # encoding: utf-8
 
 module_name = "bones-module-kd"
-module_version = "v0.0.2-dev"
-module_date = "31.Jan 2014 11:06"
+module_version = "v0.0.2-NSFW"
+module_date = "06.Feb 2014 21:08"
 
 import os
 import string, random
@@ -21,12 +21,10 @@ today = datetime.datetime.today()
 logger = logging.getLogger(module_name)
 
 def msg(event, string1, string2=False):
-	"""
-	If string2 is supplied string1 will be
+	"""If string2 is supplied string1 will be
 	used as a prefix for the output.
 	Note that empty lines will be ignored.
-	Use a space if you need a empty line.
-	"""
+	Use a space if you need a empty line."""
 	prefix = "\x0312[KD]"
 	if len(string1.strip("\n")) >= 1:
 		if string2 != False:

@@ -19,9 +19,9 @@ class core(Module):
 			arg = event.args[0].lower()
 			
 			if arg == "debug":
-				msg(event.channel.msg, "INFO", "System time:\x0309 %s" % (time.ctime()))
+				msg(event.channel.msg, "INFO", "System time:\x0309 %s" % (time.strftime("%d.%m.%Y %H:%m:%S")))
 			if arg == "info" or arg == "debug":
-				msg(event.channel.msg, "INFO", "Running \x0309%s %s\x0300 on \x0309%s" % 
+				msg(event.channel.msg, "INFO", "Running \x0309%s %s\x03 on \x0309%s" % 
 				(
 					platform.python_implementation(), platform.python_version(), platform.node()
 				))

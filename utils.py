@@ -54,6 +54,8 @@ class math(Module):
 		db_update = datetime.datetime(today.year, today.month, today.day, 9)
 		
 		if last_update < db_update and datetime.datetime.now() > db_update:
+			if not os.path.exists(cachepath):
+				os.makedirs(cachepath)
 			try:
 				data = urlopener.open(api_url).read()
 				with open(cachepath, "w") as cachefile:
@@ -180,6 +182,18 @@ class misc(Module):
 	def timetoTG14(self, event):
 		tg14_timeleft = (datetime.datetime(2014,04,16,9) - datetime.datetime.now())
 		msg(event.channel.msg, "Det er\x039 " + str(tg14_timeleft.days) + "\x03 dager og\x039 " + str(tg14_timeleft.seconds//3600) + "\x03 timer til \x0312TG14\x03!")
+
+	@bones.event.handler(trigger="time")
+	def localtime(self, event):
+		msg(event.channel.msg, "The time is: %s" % time.strftime("\x0312%d.%m.%Y \x0309%H:%m:%S"))
+	
+	@bones.event.handler(event=bones.event.PrivmsgEvent)
+	def stringResponses(self, event):
+		msg_str = re.sub("\x02|\x1f|\x1d|\x16|\x0f|\x03\d{0,2}(,\d{0,2})?", "", event.msg)
+		msg_args = msg_str.split(" ")
+		if event.msg.startswith("/r/") and len(msg_args[0]) > 3:
+			redditurl = "http://reddit.com"
+			msg(event.channel.msg, "reddit \x0311::\x03 %s \x0311::\x03 %s" % (msg_args[0], redditurl + str(msg_args[0])))
 			
 	@bones.event.handler(trigger="ping")
 	def cmdPing(self, event):

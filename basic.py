@@ -19,7 +19,7 @@ class help(Module):
 	@bones.event.handler(trigger="man")
 	def cmdMan(self, event):
 		if event.args:
-			manpage = event.args[0]
+			manpage = event.args[0].lower()
 			manpath = os.path.join(etc_path, "man", manpage)
 			if os.path.exists(manpath):
 				with open(os.path.join(manpath)) as manfile:

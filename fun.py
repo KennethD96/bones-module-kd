@@ -55,6 +55,11 @@ class triggers(Module):
 					if len(args[1]) >= 1:
 						messagefiles = ["deathmessages_weapons.txt"]
 						weapons = [args[1]]
+			target, player, weapon = (
+				"\x0312" + target + "\x03",
+				"\x0304" + player + "\x03",
+				"\x0309" + random.choice(weapons) + "\x03",
+			)
 			with open(os.path.join(etc_path, "deathmessages", random.choice(messagefiles)), "r") as deathmessages:
 				deathmessage = random.choice(deathmessages.readlines())
 				if "[target]" in deathmessage:
@@ -62,7 +67,7 @@ class triggers(Module):
 				if "[player]" in deathmessage:
 					deathmessage = deathmessage.replace("[player]", player)
 				if "[weapon]" in deathmessage:
-					deathmessage = deathmessage.replace("[weapon]", random.choice(weapons))
+					deathmessage = deathmessage.replace("[weapon]", weapon)
 				msg(event.channel.msg, deathmessage)
 
 class responses(Module):
