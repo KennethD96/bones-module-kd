@@ -34,39 +34,40 @@ class math(Module):
 						calc_input = calc_input.replace(wrd, value)
 				
 				result = "".join(calc.communicate("%s\n" % calc_input)[0].split('\\\n')).split("\n")
-				msg(event.channel.msg, prefix, "input: %s" % (calc_input))
+				msg(event.channel.msg, prefix, "< %s" % (calc_input))
 				for line in result:
-					if len(line) > maxLen:
-						warn(event, "Result too long for chat. Protip: Try http://wolframalpha.com")
-					else:
-						if line.rstrip("\n").isdigit():
-							msg(event.channel.msg, prefix, "{0:,}".format(int(line)).replace(",", ",").strip("\n"))
+					if len(line.strip("\n")) >= 1:
+						if len(line) > maxLen:
+							warn(event, "Result too long for chat. Protip: Try http://wolframalpha.com")
 						else:
-							msg(event.channel.msg, prefix, line)
+							if line.rstrip("\n").isdigit():
+								msg(event.channel.msg, prefix, "= " + "{0:,}".format(int(line)).replace(",", ",").strip("\n"))
+							else:
+								msg(event.channel.msg, prefix, "= " + line)
 			except OSError:
 				logger.error("Could not fetch BC, is it installed?")
 		
-	@bones.event.handler(trigger="ccon")
-	def CurrencyConvert(self, event):
-		api_url = "https://www.dnb.no/portalfront/datafiles/miscellaneous/csv/kursliste_ws.xml"
-		cachepath = os.path.join(cache_path, "currency_db.xml.cache")
-		last_update = datetime.datetime(1970,1,1)
-		db_update = datetime.datetime(today.year, today.month, today.day, 9)
-		
-		if last_update < db_update and datetime.datetime.now() > db_update:
-			if not os.path.exists(cachepath):
-				os.makedirs(cachepath)
-			try:
-				data = urlopener.open(api_url).read()
-				with open(cachepath, "w") as cachefile:
-					cachefile.write(data)
-			except:
-				data = open(cachepath, "r").read()
-				logger.warn("Could not download currency database")
-			logger.info("Currency database successfully updated!")
-			last_update = datetime.datetime.now()
-		else:
-			data = open(cachepath, "r").read()
+	#@bones.event.handler(trigger="ccon")
+	#def CurrencyConvert(self, event):
+	#	api_url = "https://www.dnb.no/portalfront/datafiles/miscellaneous/csv/kursliste_ws.xml"
+	#	cachepath = os.path.join(cache_path, "currency_db.xml.cache")
+	#	last_update = datetime.datetime(1970,1,1)
+	#	db_update = datetime.datetime(today.year, today.month, today.day, 9)
+	#	
+	#	if last_update < db_update and datetime.datetime.now() > db_update:
+	#		if not os.path.exists(cachepath):
+	#			os.makedirs(cachepath)
+	#		try:
+	#			data = urlopener.open(api_url).read()
+	#			with open(cachepath, "w") as cachefile:
+	#				cachefile.write(data)
+	#		except:
+	#			data = open(cachepath, "r").read()
+	#			logger.warn("Could not download currency database")
+	#		logger.info("Currency database successfully updated!")
+	#		last_update = datetime.datetime.now()
+	#	else:
+	#		data = open(cachepath, "r").read()
 
 	@bones.event.handler(trigger="bcon")
 	@bones.event.handler(trigger="hex")
@@ -181,11 +182,14 @@ class misc(Module):
 	@bones.event.handler(trigger="tg14")
 	def timetoTG14(self, event):
 		tg14_timeleft = (datetime.datetime(2014,04,16,9) - datetime.datetime.now())
-		msg(event.channel.msg, "Det er\x039 " + str(tg14_timeleft.days) + "\x03 dager og\x039 " + str(tg14_timeleft.seconds//3600) + "\x03 timer til \x0312TG14\x03!")
+		msg(event.channel.msg,
+			"Det er\x039 %s\x03 dager og\x039 %s\x03 timer til \x0312TG14\x03!" %
+			(str(tg14_timeleft.days), str(tg14_timeleft.seconds//3600))
+		)
 
 	@bones.event.handler(trigger="time")
 	def localtime(self, event):
-		msg(event.channel.msg, "The time is: %s" % time.strftime("\x0312%d.%m.%Y \x0309%H:%m:%S"))
+		msg(event.channel.msg, "The time is: %s" % time.strftime("\x0312%d.%m.%Y \x0309%H:%M:%S"))
 	
 	@bones.event.handler(event=bones.event.PrivmsgEvent)
 	def stringResponses(self, event):
