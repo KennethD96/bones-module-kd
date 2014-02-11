@@ -26,9 +26,9 @@ class help(Module):
 					manpage = manfile.read()
 					msg(event.user.msg, manpage.rstrip("\n"))
 			else:
-				warn(event, "No manual entry by that name.")
+				warn(event.channel.msg, "No manual entry by that name.")
 		else:
-			warn(event, "Please specify a manual page.")
+			warn(event.channel.msg, "Please specify a manual page.")
 
 class misc(Module):
 	def __init__(self, *args, **kwargs):

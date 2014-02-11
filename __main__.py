@@ -2,7 +2,7 @@
 
 module_name = "BONES-MODULE-KD"
 module_version = "v0.0.2-NSFW"
-module_date = "11.Feb 2014 13:49"
+module_date = "11.Feb 2014 20:43"
 
 import os
 import string, random
@@ -39,9 +39,9 @@ def msg(event, string1, string2=False):
 def error(event, string):
 	errPrefix = "\x034[Error]\x03 "
 	for line in string.split("\n"):
-		event.channel.msg(errPrefix + line)
+		event(errPrefix + line)
 	
 def warn(event, string):
 	warnPrefix = "\x038[Warning]\x03 "
 	for line in string.split("\n"):
-		event.channel.msg(warnPrefix + line)
+		event(warnPrefix + line)

@@ -39,7 +39,7 @@ class math(Module):
 				for line in result:
 					if len(line.strip("\n")) >= 1:
 						if len(line) > maxLen:
-							warn(event, "Result too long for chat. Protip: Try http://wolframalpha.com")
+							warn(event.channel.msg, "Result too long for chat. Protip: Try http://wolframalpha.com")
 						else:
 							if line.rstrip("\n").isdigit():
 								msg(event.channel.msg, prefix, "\x0314=\x03 %s" % 
@@ -147,17 +147,17 @@ class math(Module):
 					elif args[1].lower().startswith(("ascii", "txt")):
 						msg(event.channel.msg, "TXT", "".join(out_ascii))
 					else:
-						warn(event, "Unknown output")
+						warn(event.channel.msg, "Unknown output")
 				else:
 					msg(event.channel.msg, "Dec", dec_out)
 					msg(event.channel.msg, "Hex", hex_out)
 					msg(event.channel.msg, "Bin", bin_out)
 			except ValueError:
-				error(event, "Invalid number")
+				error(event.channel.msg, "Invalid number")
 			except TypeError:
-				error(event, "Invalid input")
+				error(event.channel.msg, "Invalid input")
 		else:
-			warn(event, "Usage: [Hex/Bin/Dec] Numbers to convert.")
+			warn(event.channel.msg, "Usage: [Hex/Bin/Dec] Numbers to convert.")
 
 class misc(Module):
 	def __init__(self, *args, **kwargs):
@@ -173,7 +173,7 @@ class misc(Module):
 		rand = "".join(random.choice(chars) for x in range(tArgs))
 		if len(event.args) > 0:
 			if int(event.args[0]) > int(maxLen):
-				warn(event, "Length must be a valid number between 1 and 256!")
+				warn(event.channel.msg, "Length must be a valid number between 1 and 256!")
 			else:
 				tArgs = int(event.args[0])
 				tArgs = max(1, min(tArgs, maxLen))
@@ -193,6 +193,45 @@ class misc(Module):
 	@bones.event.handler(trigger="time")
 	def localtime(self, event):
 		msg(event.channel.msg, "The time is: %s" % time.strftime("\x0312%d.%m.%Y \x0309%H:%M:%S"))
+
+	@bones.event.handler(trigger="parsev6")
+	def ipv6parser(self, event):
+		addr = event.args[0].strip("[]").lower()
+		if re.findall("[^0-9a-f:]+", addr):
+			warn(event.channel.msg, "Address can only contain hex characters")
+			return
+		else:
+			addr = addr.replace("::", ":x:").split(":")
+			output = []
+		try:
+			addr.remove("")
+		except:
+			pass
+		
+		if "".join(addr).count("x") == 1:
+			xpos = addr.index("x")
+			addr.remove("x")
+			while len(addr) < 8:
+				addr.insert(xpos, "0000")
+		elif "".join(addr).count("x") > 1:
+			warn(event.channel.msg, "Zeros can only be omitted once")
+			return
+
+		for item in addr:
+			if len(item) > 4:
+				warn(event.channel.msg, "Each section cannot contain more than 4 numbers")
+				return
+			while len(item) < 4:
+				item = "0" + item
+			output.append(item)
+
+		if len(addr) < 8:
+			error(event.channel.msg, "Incomplete address")
+			return
+		elif len(addr) > 8:
+			error(event.channel.msg, "Invalid address")
+			return
+		msg(event.channel.msg, "IPv6", ":".join(output))
 
 	@bones.event.handler(event=bones.event.PrivmsgEvent)
 	def stringResponses(self, event):
