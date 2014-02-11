@@ -11,18 +11,22 @@ class core(Module):
 
 	@bones.event.handler(trigger="kdver")
 	def return_ver(self, event):
+		level = {
+			"info": 1,
+			"debug": 0,
+		}
 		msg(event.channel.msg, "INFO", "%s \x0309%s \x0312(%s)" % 
-		(
-			module_name, module_version, module_date
-		))
+			(module_name, module_version, module_date))
 		if len(event.args) > 0:
 			arg = event.args[0].lower()
-			
-			if arg == "debug":
-				msg(event.channel.msg, "INFO", "System time:\x0309 %s" % (time.strftime("%d.%m.%Y %H:%m:%S")))
-			if arg == "info" or arg == "debug":
-				msg(event.channel.msg, "INFO", "Running \x0309%s %s\x03 on \x0309%s" % 
-				(
-					platform.python_implementation(), platform.python_version(), platform.node()
-				))
-				msg(event.channel.msg, "INFO", "OS: \x0312%s %s" % (platform.system(), platform.release()))
+			try:
+				if level[arg] < 2:
+					msg(event.channel.msg, "INFO", "System time:\x0309 %s" %
+						(time.strftime("%d.%m.%Y %H:%m:%S")))
+				if level[arg] < 1:
+					msg(event.channel.msg, "INFO", "Running \x0309%s %s\x03 on \x0309%s" % 
+						(platform.python_implementation(), platform.python_version(), platform.node()))
+					msg(event.channel.msg, "INFO", "OS: \x0312%s %s" %
+						(platform.system(), platform.release()))
+			except:
+				return

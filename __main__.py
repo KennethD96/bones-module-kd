@@ -1,8 +1,8 @@
 # encoding: utf-8
 
-module_name = "bones-module-kd"
+module_name = "BONES-MODULE-KD"
 module_version = "v0.0.2-NSFW"
-module_date = "08.Feb 2014 16:50"
+module_date = "11.Feb 2014 13:49"
 
 import os
 import string, random
@@ -30,7 +30,7 @@ def msg(event, string1, string2=False):
 		if string2 != False:
 			for line in string2.split("\n"):
 				if len(line) != 0:
-					event("%s\x0315[%s]\x03 %s" % (prefix, string1, line))
+					event("%s\x0315[%s\x0315]\x03 %s" % (prefix, string1, line))
 		else:
 			for line in string1.split("\n"):
 				if len(line) != 0:

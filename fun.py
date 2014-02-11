@@ -79,8 +79,8 @@ class responses(Module):
 				
 	@bones.event.handler(event=bones.event.PrivmsgEvent)
 	def randomResponses(self, event):
-		msg = re.sub("\x02|\x1f|\x1d|\x16|\x0f|\x03\d{0,2}(,\d{0,2})?", "", event.msg)
-		if msg.startswith(":>") and event.user.nickname in self.trigger_users:
+		msg_str = re.sub("\x02|\x1f|\x1d|\x16|\x0f|\x03\d{0,2}(,\d{0,2})?", "", event.msg)
+		if msg_str.startswith(":>") and event.user.nickname in self.trigger_users:
 			event.channel.msg(":>")
 			
 	@bones.event.handler(event=bones.event.PrivmsgEvent)
