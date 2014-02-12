@@ -198,7 +198,7 @@ class misc(Module):
 	def ipv6parser(self, event):
 		addr = event.args[0].strip("[]").lower()
 		if re.findall("[^0-9a-f:]+", addr):
-			warn(event.channel.msg, "Address can only contain hex characters")
+			error(event.channel.msg, "Address can only contain hex characters")
 			return
 		else:
 			addr = addr.replace("::", ":x:").split(":")
@@ -208,18 +208,17 @@ class misc(Module):
 		except:
 			pass
 		
-		if "".join(addr).count("x") == 1:
+		if addr.count("x") == 1:
 			xpos = addr.index("x")
 			addr.remove("x")
 			while len(addr) < 8:
 				addr.insert(xpos, "0000")
-		elif "".join(addr).count("x") > 1:
-			warn(event.channel.msg, "Zeros can only be omitted once")
+		elif addr.count("x") > 1:
+			error(event.channel.msg, "Zero's can only be omitted once")
 			return
-
 		for item in addr:
 			if len(item) > 4:
-				warn(event.channel.msg, "Each section cannot contain more than 4 numbers")
+				error(event.channel.msg, "Each section cannot contain more than 4 numbers")
 				return
 			while len(item) < 4:
 				item = "0" + item

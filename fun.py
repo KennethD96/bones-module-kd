@@ -56,9 +56,9 @@ class triggers(Module):
 						messagefiles = ["deathmessages_weapons.txt"]
 						weapons = [args[1]]
 			target, player, weapon = (
-				"\x0312" + target + "\x03",
+				"\x0304" + target + "\x03",
 				"\x0304" + player + "\x03",
-				"\x0309" + random.choice(weapons) + "\x03",
+				"\x0305" + random.choice(weapons) + "\x03",
 			)
 			with open(os.path.join(etc_path, "deathmessages", random.choice(messagefiles)), "r") as deathmessages:
 				deathmessage = random.choice(deathmessages.readlines())
