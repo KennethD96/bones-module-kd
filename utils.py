@@ -19,22 +19,19 @@ class math(Module):
 	def cmdCalc(self, event):
 		prefix = "CALC"
 		maxLen = 275
-		constants = {
-			"c":"299792458",
-			"k":"000",
-			"pi":"3.1415926535897932"
-		}
+		constants = [
+			"c=299792458",
+			"pi=3.1415926535897932"
+		]
 		if not event.args:
-			msg(event.channel.msg, "Please provide a equation")
+			warn(event.channel.msg, "You must provide a equation")
 		else:
 			try:
 				calc = Popen("bc", stdin=PIPE, stdout=PIPE)
 				calc_input = "".join(event.args).lower().replace(",", ".")
-				for wrd, value in constants.iteritems():
-					if wrd in calc_input:
-						calc_input = calc_input.replace(wrd, value)
+				result = "".join(calc.communicate("%s;%s\n" %
+					(";".join(constants), calc_input))[0].split('\\\n')).split("\n")
 				
-				result = "".join(calc.communicate("%s\n" % calc_input)[0].split('\\\n')).split("\n")
 				msg(event.channel.msg, prefix, "\x0314<\x03 %s" % (calc_input))
 				for line in result:
 					if len(line.strip("\n")) >= 1:
@@ -43,8 +40,7 @@ class math(Module):
 						else:
 							if line.rstrip("\n").isdigit():
 								msg(event.channel.msg, prefix, "\x0314=\x03 %s" % 
-									"{0:,}".format(int(line)).replace(",", ",").strip("\n")
-								)
+									"{0:,}".format(int(line)).replace(",", ",").strip("\n"))
 							else:
 								msg(event.channel.msg, prefix, "\x0314=\x03 " + line)
 			except OSError:
