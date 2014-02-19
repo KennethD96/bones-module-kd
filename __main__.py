@@ -2,7 +2,7 @@
 
 module_name = "BONES-MODULE-KD"
 module_version = "v0.0.2-NSFW"
-module_date = "16.Feb 2014 13:53"
+module_date = "18.Feb 2014 00:40"
 
 import os
 import string, random
