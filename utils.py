@@ -235,7 +235,7 @@ class misc(Module):
 			if not "reddit.com" in event.msg.lower():
 				try:
 					redditurl = "http://reddit.com"
-					subreddit =  "/r/" + re.match("(\A|\s)/?r/(\w+)", msg_str).group(2)
+					subreddit =  "/r/" + re.match("(\A|\s|.)*/?r/(\w+)", msg_str).group(2)
 					if len(subreddit) > 3:
 						msg(event.channel.msg, "reddit \x0311::\x03 %s \x0311::\x03 %s" % 
 							(subreddit, redditurl + subreddit))

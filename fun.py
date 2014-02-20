@@ -75,13 +75,23 @@ class responses(Module):
 		Module.__init__(self, *args, **kwargs)
 		self.danceCooldown = {}
 		self.danceCooldownTime = None
-		self.trigger_users = ["KennethD", "_404`d", "Mathias"]
+		self.privileged_users = ["KennethD", "_404`d", "Mathias"]
+		self.privileged_responses = {
+			":>":":>",
+		}
+		self.randomresponses = {}
 				
 	@bones.event.handler(event=bones.event.PrivmsgEvent)
-	def randomResponses(self, event):
+	def stringResponses(self, event):
 		msg_str = re.sub("\x02|\x1f|\x1d|\x16|\x0f|\x03\d{0,2}(,\d{0,2})?", "", event.msg)
-		if msg_str.startswith(":>") and event.user.nickname in self.trigger_users:
-			event.channel.msg(":>")
+		for trigger, response in self.randomresponses.iteritems():
+			if msg_str.startswith(trigger):
+				event.channel.msg(response)
+		
+		for trigger, response in self.privileged_responses.iteritems():
+			if msg_str.startswith(trigger) and event.user.nickname in self.privileged_users:
+				event.channel.msg(response)
+
 			
 	@bones.event.handler(event=bones.event.PrivmsgEvent)
 	def DANCE(self, event, step=0):
