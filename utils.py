@@ -182,13 +182,17 @@ class misc(Module):
 	@bones.event.handler(trigger="tg14")
 	def timetoTG14(self, event):
 		tg14_timeleft = (datetime.datetime(2014,04,16,9) - datetime.datetime.now())
-		msg(event.channel.msg,
-			"Det er\x039 %s\x03 dager og\x039 %s\x03 timer til \x0312TG14\x03!" %
-			(str(tg14_timeleft.days), str(tg14_timeleft.seconds//3600)))
+		if tg14_timeleft.total_seconds() > 0:
+			msg(event.channel.msg,
+				"Det er\x039 %s\x03 dager og\x039 %s\x03 timer til \x0312TG14\x03!" %
+				(str(tg14_timeleft.days), str(tg14_timeleft.seconds//3600)))
+		else:
+			msg(event.channel.msg,
+				"\x0312TG14\x03 pågår \x039nå\x03!")
 
 	@bones.event.handler(trigger="time")
 	def localtime(self, event):
-		msg(event.channel.msg, "The time is: %s" % time.strftime("\x0312%d.%m.%Y \x0309%H:%M:%S"))
+		msg(event.channel.msg, "The time is: %s" % time.strftime("\x0309%H:%M:%S \x0312%d.%m.%Y"))
 
 	@bones.event.handler(trigger="parsev6")
 	def ipv6parser(self, event):
@@ -235,7 +239,7 @@ class misc(Module):
 			if not "reddit.com" in event.msg.lower():
 				try:
 					redditurl = "http://reddit.com"
-					subreddit =  "/r/" + re.match("(\A|\s|.)*/?r/(\w+)", msg_str).group(2)
+					subreddit =  "/r/" + re.match("[^.]*(\A|\s)+/?r/(\w+)", msg_str).group(2)
 					if len(subreddit) > 3:
 						msg(event.channel.msg, "reddit \x0311::\x03 %s \x0311::\x03 %s" % 
 							(subreddit, redditurl + subreddit))

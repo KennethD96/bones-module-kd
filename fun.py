@@ -77,7 +77,6 @@ class responses(Module):
 		self.danceCooldownTime = None
 		self.privileged_users = ["KennethD", "_404`d", "Mathias"]
 		self.privileged_responses = {
-			":>":":>",
 		}
 		self.randomresponses = {}
 				
