@@ -1,8 +1,8 @@
 # encoding: utf-8
 
-module_name = "BONES-MODULE-KD"
+module_name = "BONES-MODULE-KD_ESSENTIALS"
 module_version = "v0.0.2-DEV"
-module_date = "07.Apr 2014 23:49"
+module_date = "08.Apr 2014 10:12"
 
 import os
 import string, random

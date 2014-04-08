@@ -86,7 +86,6 @@ class responses(Module):
 		for trigger, response in self.randomresponses.iteritems():
 			if msg_str.startswith(trigger):
 				event.channel.msg(response)
-		
 		for trigger, response in self.privileged_responses.iteritems():
 			if msg_str.startswith(trigger) and event.user.nickname in self.privileged_users:
 				event.channel.msg(response)
