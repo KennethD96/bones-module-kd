@@ -179,16 +179,22 @@ class misc(Module):
 			event.user.notice('Here you go: %s' % rand)
 			
 	@bones.event.handler(trigger="tg")
-	@bones.event.handler(trigger="tg14")
+	@bones.event.handler(trigger="tg15")
 	def timetoTG14(self, event):
-		tg14_timeleft = (datetime.datetime(2014,04,16,9) - datetime.datetime.now())
-		if tg14_timeleft.total_seconds() > 0:
+		tg15_start = (datetime.datetime(2015,4,1,9) - datetime.datetime.now())
+		tg15_end = (datetime.datetime(2015,4,5,13) - datetime.datetime.now())
+		if tg15_start.total_seconds() > 0:
 			msg(event.channel.msg,
-				"Det er\x039 %s\x03 dager og\x039 %s\x03 timer til \x0312TG14\x03!" %
-				(str(tg14_timeleft.days), str(tg14_timeleft.seconds//3600)))
+				"Det er \x0309%s\x03 dager, \x0309%s\x03 timer og \x0309%s\x03 minutter igjen til \x0312The Gathering 2015\x03!" %
+				(str(tg15_start.days), str(tg15_start.seconds//3600), str(tg15_start.seconds//60%60)))
+		elif tg15_end.total_seconds() < 1:
+			msg(event.channel.msg,
+				"\x0312The Gathering 2015\x03 er over!")
 		else:
 			msg(event.channel.msg,
-				"\x0312TG14\x03 pågår \x039nå\x03!")
+				"Det er \x0309%s\x03 dager, \x0309%s\x03 timer og \x0309%s\x03 minutter igjen av \x0312The Gathering 2015\x03!" %
+				(str(tg15_end.days), str(tg15_end.seconds//3600), str(tg15_end.seconds//60%60)))
+
 
 	@bones.event.handler(trigger="time")
 	def localtime(self, event):
