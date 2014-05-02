@@ -8,10 +8,11 @@ Utilities:
  bcon [hex/bin/dec] (Numbers to convert) [,output]   A simple HEX/Binary/Decimal converter.
  hex, bin, dec (Numbers to convert)                  Aliases for the above command.
  pw, password [String length]                        Generates a random string that can be used as a password.
- tg, tg14                                            Shows a countdown for The Gathering 2014.
+ tg, tg15                                            Shows a countdown to The Gathering 2015.
  parsev6                                             A simple IPv6 decompressing tool.
  ping                                                A simple tool that measures your IRC client's CTCP Pong response time.
 Fun:
  fortune                                             An in-chat version of the Fortune command.
- killstreak, kill User/Name] [(,)Weapon]             Prints a random Death message.
+ killstreak, kill [User/Name] [(,)Weapon]            Prints a random Death message.
+ 8ball, magic8 (question)                            When in doubt, ask the magic 8-ball.
 () = Required [] = Optional

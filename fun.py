@@ -70,14 +70,29 @@ class triggers(Module):
 					deathmessage = deathmessage.replace("[weapon]", weapon)
 				msg(event.channel.msg, deathmessage)
 
+	@bones.event.handler(trigger="magic8")
+	@bones.event.handler(trigger="8ball")
+	def magic8(self, event):
+		magic8_path = os.path.join(etc_path, "magic8.txt")
+		question = " ".join(event.args)
+		if os.path.exists(magic8_path):
+			with open(magic8_path, "r") as lines:
+				responses = lines.read().split("\n")
+				magic8_response = random.choice(responses)
+			if len(question) >= 4:
+				while magic8_response == "":
+					magic8_response = random.choice(responses)
+				msg(event.channel.msg, "8-ball", "\x03" + magic8_response)
+			else:
+				msg(event.channel.msg, "8-ball", "Please give me a question.")
+
 class responses(Module):
 	def __init__(self, *args, **kwargs):
 		Module.__init__(self, *args, **kwargs)
 		self.danceCooldown = {}
 		self.danceCooldownTime = None
 		self.privileged_users = ["KennethD", "_404`d", "Mathias"]
-		self.privileged_responses = {
-		}
+		self.privileged_responses = {}
 		self.randomresponses = {}
 				
 	@bones.event.handler(event=bones.event.PrivmsgEvent)
