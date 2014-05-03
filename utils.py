@@ -241,16 +241,16 @@ class misc(Module):
 	@bones.event.handler(event=bones.event.PrivmsgEvent)
 	def stringResponses(self, event):
 		msg_str = re.sub("\x02|\x1f|\x1d|\x16|\x0f|\x03\d{0,2}(,\d{0,2})?", "", event.msg)
-		if "r/" in event.msg.lower():
+		if "r/" in event.msg.lower() and not event.msg.lower().startswith(prefixChars):
 			if not "reddit.com" in event.msg.lower():
 				try:
-					redditurl = "http://reddit.com"
 					subreddit =  "/r/" + re.match("[^.]*(\A|\s)+/?r/(\w+)", msg_str).group(2)
+					subreddit_url = "http://reddit.com" + subreddit
 					if len(subreddit) > 3:
 						msg(event.channel.msg, "reddit \x0311::\x03 %s \x0311::\x03 %s" % 
-							(subreddit, redditurl + subreddit))
-				except:
-					return
+							(subreddit, subreddit_url))
+				except AttributeError:
+					pass
 			
 	@bones.event.handler(trigger="ping")
 	def cmdPing(self, event):

@@ -2,14 +2,15 @@
 
 module_name = "BONES-MODULE-KD_ESSENTIALS"
 module_version = "v0.0.2-DEV"
-module_date = "2.May 2014 21:56"
+module_date = "3.May 2014 03:07"
 
-import os
+import os, sys
 import string, random
 import time, datetime
 
 import bones.event, logging
 from bones.bot import Module, urlopener
+from bones.config import BaseConfiguration
 
 mod_path = os.path.dirname(__file__)
 etc_path = mod_path + "/etc/"
@@ -17,8 +18,10 @@ cache_path = mod_path + "/cache/"
 
 arg_separator = ","
 
+settings = BaseConfiguration(sys.argv[1])
 today = datetime.datetime.today()
 logger = logging.getLogger(module_name)
+prefixChars = settings.get("bot", "triggerPrefixes").decode("utf-8")
 
 def msg(event, string1, string2=False):
 	"""If string2 is supplied string1 will be
