@@ -23,17 +23,6 @@ class triggers(Module):
 		except OSError:
 			logger.error("Could not fetch Fortune, is it installed?")
 		
-	@bones.event.handler(trigger="allo")
-	def cmdAlloQuotes(self, event):
-		try:
-			inputfile = "allo"
-			fortune = Popen(["fortune", os.path.join(etc_path, "fortunes" , inputfile)], stdout=PIPE)
-			allo_lines = fortune.communicate()[0].split("\n")
-			for line in allo_lines:
-				msg(event.channel.msg, line)
-		except OSError:
-			logger.error("Could not fetch Fortune, is it installed?")
-		
 	@bones.event.handler(trigger="killstreak")
 	@bones.event.handler(trigger="kill")
 	def cmdKillstreak(self, event):
@@ -77,8 +66,8 @@ class triggers(Module):
 		question = " ".join(event.args)
 		if re.match("\s*([^\s]+\s)+[^\s]+\?\s*$", question):
 			if os.path.exists(magic8_path):
-				with open(magic8_path, "r") as lines:
-					responses = lines.read().split("\n")
+				with open(magic8_path, "r") as responses_file:
+					responses = responses_file.read().split("\n")
 					magic8_response = random.choice(responses)
 					while magic8_response == "":
 						magic8_response = random.choice(responses)
