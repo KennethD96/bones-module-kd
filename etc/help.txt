@@ -9,7 +9,6 @@ Utilities:
  hex, bin, dec (Numbers to convert)                  Aliases for the above command.
  pw, password [String length]                        Generates a random string that can be used as a password.
  tg, tg15                                            Shows a countdown to The Gathering 2015.
- parsev6                                             A simple IPv6 decompressing tool.
  ping                                                A simple tool that measures your IRC client's CTCP Pong response time.
 Fun:
  fortune                                             An in-chat version of the Fortune command.

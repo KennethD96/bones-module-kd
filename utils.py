@@ -195,48 +195,9 @@ class misc(Module):
 				"Det er \x0309%s\x03 dager, \x0309%s\x03 timer og \x0309%s\x03 minutter igjen av \x0312The Gathering 2015\x03!" %
 				(str(tg15_end.days), str(tg15_end.seconds//3600), str(tg15_end.seconds//60%60)))
 
-
 	@bones.event.handler(trigger="time")
 	def localtime(self, event):
 		msg(event.channel.msg, "The time is: %s" % time.strftime("\x0309%H:%M:%S \x0312%d.%m.%Y"))
-
-	@bones.event.handler(trigger="parsev6")
-	def ipv6parser(self, event):
-		addr = event.args[0].strip("[]").lower()
-		if re.findall("[^0-9a-f:]+", addr):
-			error(event.channel.msg, "Address can only contain hex characters")
-			return
-		else:
-			addr = addr.replace("::", ":x:").split(":")
-			output = []
-		try:
-			addr.remove("")
-		except:
-			pass
-		
-		if addr.count("x") == 1:
-			xpos = addr.index("x")
-			addr.remove("x")
-			while len(addr) < 8:
-				addr.insert(xpos, "0000")
-		elif addr.count("x") > 1:
-			error(event.channel.msg, "Zero's can only be omitted once")
-			return
-		for item in addr:
-			if len(item) > 4:
-				error(event.channel.msg, "Each section cannot contain more than 4 numbers")
-				return
-			while len(item) < 4:
-				item = "0" + item
-			output.append(item)
-
-		if len(addr) < 8:
-			error(event.channel.msg, "Incomplete address")
-			return
-		elif len(addr) > 8:
-			error(event.channel.msg, "Invalid address")
-			return
-		msg(event.channel.msg, "IPv6", ":".join(output))
 
 	@bones.event.handler(event=bones.event.PrivmsgEvent)
 	def stringResponses(self, event):
