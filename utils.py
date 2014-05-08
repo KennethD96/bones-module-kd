@@ -12,7 +12,6 @@ from __main__ import *
 class math(Module):
 	def __init__(self, *args, **kwargs):
 		Module.__init__(self, *args, **kwargs)
-		self.ccon_last_update = datetime.datetime(1970,1,1)
 		
 	@bones.event.handler(trigger="calc")
 	@bones.event.handler(trigger="cc")
@@ -45,27 +44,6 @@ class math(Module):
 								msg(event.channel.msg, prefix, "\x0314=\x03 " + line)
 			except OSError:
 				logger.error("Could not fetch BC, is it installed?")
-		
-	#@bones.event.handler(trigger="ccon")
-	#def CurrencyConvert(self, event):
-	#	api_url = "https://www.dnb.no/portalfront/datafiles/miscellaneous/csv/kursliste_ws.xml"
-	#	cachepath = os.path.join(cache_path, "currency_db.xml.cache")
-	#	db_update = datetime.datetime(today.year, today.month, today.day, 9)
-	#	
-	#	if self.ccon_last_update < db_update and datetime.datetime.now() > db_update:
-	#		if not os.path.exists(cachepath):
-	#			os.makedirs(cachepath)
-	#		try:
-	#			data = urlopener.open(api_url).read()
-	#			with open(cachepath, "w") as cachefile:
-	#				cachefile.write(data)
-	#		except:
-	#			data = open(cachepath, "r").read()
-	#			logger.warn("Could not download currency database")
-	#		logger.info("Currency database successfully updated!")
-	#		self.ccon_last_update = datetime.datetime.now()
-	#	else:
-	#		data = open(cachepath, "r").read()
 
 	@bones.event.handler(trigger="bcon")
 	@bones.event.handler(trigger="hex")
@@ -212,6 +190,8 @@ class misc(Module):
 							(subreddit, subreddit_url))
 				except AttributeError:
 					pass
+
+# 404d's stuff
 			
 	@bones.event.handler(trigger="ping")
 	def cmdPing(self, event):

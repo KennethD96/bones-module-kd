@@ -80,9 +80,9 @@ class responses(Module):
 		Module.__init__(self, *args, **kwargs)
 		self.danceCooldown = {}
 		self.danceCooldownTime = None
-		self.privileged_users = ["KennethD", "_404`d", "Mathias"]
-		self.privileged_responses = {}
-		self.randomresponses = {}
+		self.privileged_users = ["KennethD", "_404`d", "Mathias"] # Users applicable for responses in the privileged_responses dictionary.
+		self.privileged_responses = {} # Contains a dictionary of responses available for privileged users only.
+		self.randomresponses = {} # Contains a dictionary of responses available to all users.
 				
 	@bones.event.handler(event=bones.event.PrivmsgEvent)
 	def stringResponses(self, event):
