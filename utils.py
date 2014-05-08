@@ -137,6 +137,7 @@ class misc(Module):
 	def __init__(self, *args, **kwargs):
 		Module.__init__(self, *args, **kwargs)
 		self.ongoingPings = {}
+		self.prefixChars = self.settings.get("bot", "triggerPrefixes").decode("utf-8")
 
 	@bones.event.handler(trigger="pw")
 	@bones.event.handler(trigger="password")
@@ -180,7 +181,7 @@ class misc(Module):
 	@bones.event.handler(event=bones.event.PrivmsgEvent)
 	def stringResponses(self, event):
 		msg_str = re.sub("\x02|\x1f|\x1d|\x16|\x0f|\x03\d{0,2}(,\d{0,2})?", "", event.msg)
-		if "r/" in event.msg.lower() and not event.msg.lower().startswith(prefixChars):
+		if "r/" in event.msg.lower() and not event.msg.lower().startswith(self.prefixChars):
 			if not "reddit.com" in event.msg.lower():
 				try:
 					subreddit =  "/r/" + re.match("[^.]*(\A|\s)+/?r/(\w+)", msg_str).group(2)
@@ -190,22 +191,3 @@ class misc(Module):
 							(subreddit, subreddit_url))
 				except AttributeError:
 					pass
-
-# 404d's stuff
-			
-	@bones.event.handler(trigger="ping")
-	def cmdPing(self, event):
-		nick = event.user.nickname
-		if nick not in self.ongoingPings:
-			self.ongoingPings[nick] = event.channel.name
-			event.user.ping()
-		else:
-			event.user.notice("Please wait until your ongoing ping in %s is finished until trying again." %
-			self.ongoingPings[nick])
-			
-	@bones.event.handler(event=bones.event.CTCPPongEvent)
-	def eventPingResponseReceive(self, event):
-		nick = event.user.nickname
-		if nick in self.ongoingPings:
-			event.user.notice("%s: Your response time was %.3f seconds." % (nick, event.secs))
-			del self.ongoingPings[nick]

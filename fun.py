@@ -93,33 +93,3 @@ class responses(Module):
 		for trigger, response in self.privileged_responses.iteritems():
 			if msg_str.startswith(trigger) and event.user.nickname in self.privileged_users:
 				event.channel.msg(response)
-
-	@bones.event.handler(event=bones.event.PrivmsgEvent)
-	def DANCE(self, event, step=0):
-		msg = re.sub("\x02|\x1f|\x1d|\x16|\x0f|\x03\d{0,2}(,\d{0,2})?", "", event.msg)
-		if "DANCE" in msg:
-			if not self.danceCooldownTime:
-				self.danceCooldownTime = int(self.settings.get("module.UselessResponses", "dance.cooldown"))
-			if step == 0:
-				if event.channel.name in self.danceCooldown:
-					last = self.danceCooldown[event.channel.name]
-					now = datetime.datetime.utcnow()
-					delta = now - last
-					if delta.seconds < self.danceCooldownTime:
-						wait = self.danceCooldownTime - delta.seconds
-						event.user.notice("Please wait %s more seconds." % wait)
-						return
-				self.danceCooldown[event.channel.name] = datetime.datetime.utcnow()
-				event.client.ctcpMakeQuery(event.channel.name, [('ACTION', "dances")])
-				reactor.callLater(1.5, self.DANCE, event, step=1)
-			elif step == 1:
-				event.channel.msg(r":D\-<")
-				reactor.callLater(1.0, self.DANCE, event, step=2)
-			elif step == 2:
-				event.channel.msg(r":D|-<")
-				reactor.callLater(1.0, self.DANCE, event, step=3)
-			elif step == 3:
-				event.channel.msg(r":D/-<")
-				reactor.callLater(1.0, self.DANCE, event, step=4)
-			elif step == 4:
-				event.channel.msg(r":D)-<")
