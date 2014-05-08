@@ -7,3 +7,6 @@ SYNTAX
 DESCRIPTION
 		Displays the MOTD set in the motd.txt file located
 		in the mod_kd folder.
+
+INLINE CODES
+		%c# Replace # with the IRC color-code.

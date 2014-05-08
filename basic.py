@@ -42,4 +42,6 @@ class misc(Module):
 		if len(motd) > 0:
 			motd_lines = motd.split("\n")
 			for line in motd_lines:
+				if "%c" in line:
+					line = line.replace("%c", "\x03")
 				msg(event.channel.msg, line)
