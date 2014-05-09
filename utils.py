@@ -22,28 +22,27 @@ class math(Module):
 			"c=299792458",
 			"pi=3.1415926535897932"
 		]
-		if not event.args:
-			warn(event.channel.msg, "You must provide a equation")
-		else:
+		
+		if event.args:
 			try:
 				calc = Popen("bc", stdin=PIPE, stdout=PIPE)
 				calc_input = "".join(event.args).lower().replace(",", ".")
-				result = "".join(calc.communicate("%s;%s\n" %
-					(";".join(constants), calc_input))[0].split('\\\n')).split("\n")
-				
-				msg(event.channel.msg, prefix, "\x0314<\x03 %s" % (calc_input))
-				for line in result:
+				result = "".join(calc.communicate("%s;%s\n" % (";".join(constants), calc_input))[0].split('\\\n'))
+				msg(event.channel.msg, prefix, "\x0314<\x03 %s" % calc_input)
+				for line in result.split("\n"):
 					if len(line.strip("\n")) >= 1:
-						if len(line) > maxLen:
-							warn(event.channel.msg, "Result too long for chat. Protip: Try http://wolframalpha.com")
-						else:
+						if len(line) < maxLen:
 							if line.rstrip("\n").isdigit():
 								msg(event.channel.msg, prefix, "\x0314=\x03 %s" % 
 									"{0:,}".format(int(line)).replace(",", ",").strip("\n"))
 							else:
 								msg(event.channel.msg, prefix, "\x0314=\x03 " + line)
+						else:
+							warn(event.channel.msg, "Result too long for chat. Protip: Try http://wolframalpha.com")
 			except OSError:
 				logger.error("Could not fetch BC, is it installed?")
+		else:
+			warn(event.channel.msg, "You must provide a equation")
 
 	@bones.event.handler(trigger="bcon")
 	@bones.event.handler(trigger="hex")
@@ -137,7 +136,7 @@ class misc(Module):
 	def __init__(self, *args, **kwargs):
 		Module.__init__(self, *args, **kwargs)
 		self.ongoingPings = {}
-		self.prefixChars = self.settings.get("bot", "triggerPrefixes").decode("utf-8")
+		self.prefixChars = self.settings.get("bot", "triggerPrefixes")
 
 	@bones.event.handler(trigger="pw")
 	@bones.event.handler(trigger="password")
