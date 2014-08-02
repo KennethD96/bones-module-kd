@@ -183,16 +183,37 @@ class misc(Module):
 
 	"""
 		TODO:
-		* Add Auto-Capitalizer (gmt -> GMT, us/los_angeles -> US/Los_Angeles, etc)
 		* Add option to convert from spesific time/date
 	"""
 	@bones.event.handler(trigger="time")
 	def timez(self, event):
+		def autoCase(string):
+			if "/" in string:
+				stringList = string.lower().split("/")
+				string = []
+				for stringTmp in stringList:
+					stringTmp = stringTmp.capitalize()
+					if "_" in stringTmp:
+						string_ = stringTmp.split("_")
+						stringU = []
+						for stringE in string_:
+							stringU.append(stringE.capitalize())
+						stringTmp = "_".join(stringU)
+					string.append(stringTmp)
+				if len(string[0]) == 2:
+					string[0] = string[0].upper()
+				string = "/".join(string)
+			elif len(string) == 3:
+				string = string.upper()
+			return string
+
 		time_fmt = "\x0309%H:%M:%S \x0312%d.%m.%Y %Z"
 		if len(event.args) > 0 and pytz_available:
 			try:
-				if len(event.args) == 1:
-					timehandle = datetime.datetime.now(pytz.timezone(event.args[0]))
+				tz = autoCase(event.args[0])
+				if len(event.args) > 1:
+					timehandle = datetime.datetime.now(pytz.timezone(tz))
+				msg(event.channel.msg, "TIME", "The time for \"%s\":" % tz)
 				msg(event.channel.msg, "TIME", timehandle.strftime(time_fmt))
 			except pytz.exceptions.UnknownTimeZoneError:
 				warn(event.channel.msg, "Unknown Timezone")
