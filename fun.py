@@ -64,7 +64,7 @@ class triggers(Module):
 	def magic8(self, event):
 		magic8_path = os.path.join(etc_path, "magic8.txt")
 		question = " ".join(event.args)
-		if re.match("\s*([^\s]+\s)+[^\s]+\?\s*$", question):
+		if re.match(".+[?|？|؟|՞|;|;]\s*$", question):
 			if os.path.exists(magic8_path):
 				with open(magic8_path, "r") as responses_file:
 					responses = responses_file.read().split("\n")
@@ -73,7 +73,8 @@ class triggers(Module):
 						magic8_response = random.choice(responses)
 					msg(event.channel.msg, "8-Ball", "\x03" + magic8_response)
 		else:
-			msg(event.channel.msg, "8-Ball", "Please give me a question.")
+			msg(event.channel.
+				msg, "8-Ball", "Please give me a question.")
 
 class responses(Module):
 	def __init__(self, *args, **kwargs):

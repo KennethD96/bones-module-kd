@@ -2,6 +2,12 @@
 import os
 import string, random, re
 import time, datetime
+try:
+	import pytz
+	pytz_available = True
+except ImportError:
+	pytz_available = False
+
 import urllib
 from subprocess import Popen, PIPE
 
@@ -26,7 +32,7 @@ class math(Module):
 		if event.args:
 			try:
 				calc = Popen("bc", stdin=PIPE, stdout=PIPE)
-				calc_input = "".join(event.args).lower().replace(",", ".")
+				calc_input = "".join(event.args).lower().replace(",", ".").encode('ascii')
 				result = "".join(calc.communicate("%s;%s\n" % (";".join(constants), calc_input))[0].split('\\\n'))
 				msg(event.channel.msg, prefix, "\x0314<\x03 %s" % calc_input)
 				for line in result.split("\n"):
@@ -41,8 +47,10 @@ class math(Module):
 							warn(event.channel.msg, "Result too long for chat. Protip: Try http://wolframalpha.com")
 			except OSError:
 				logger.error("Could not fetch BC, is it installed?")
+			except UnicodeDecodeError:
+				error(event.channel.msg, "Input contains illegal characters.")
 		else:
-			warn(event.channel.msg, "You must provide a equation")
+			warn(event.channel.msg, "You must provide a equation.")
 
 	@bones.event.handler(trigger="bcon")
 	@bones.event.handler(trigger="hex")
@@ -163,7 +171,7 @@ class misc(Module):
 		tg15_end = (datetime.datetime(2015,4,5,13) - datetime.datetime.now())
 		if tg15_start.total_seconds() > 0:
 			msg(event.channel.msg,
-				"Det er \x0309%s\x03 dager, \x0309%s\x03 timer og \x0309%s\x03 minutter igjen til \x0312The Gathering 2015\x03!" %
+				"Det er \x0309%s\x03 dager, \x0309%s\x03 timer og \x0309%s\x03 minutter til \x0312The Gathering 2015\x03!" %
 				(str(tg15_start.days), str(tg15_start.seconds//3600), str(tg15_start.seconds//60%60)))
 		elif tg15_end.total_seconds() < 1:
 			msg(event.channel.msg,
@@ -173,10 +181,28 @@ class misc(Module):
 				"Det er \x0309%s\x03 dager, \x0309%s\x03 timer og \x0309%s\x03 minutter igjen av \x0312The Gathering 2015\x03!" %
 				(str(tg15_end.days), str(tg15_end.seconds//3600), str(tg15_end.seconds//60%60)))
 
+	"""
+		TODO:
+		* Add Auto-Capitalizer (gmt -> GMT, us/los_angeles -> US/Los_Angeles, etc)
+		* Add option to convert from spesific time/date
+	"""
 	@bones.event.handler(trigger="time")
-	def localtime(self, event):
-		msg(event.channel.msg, "The time is: %s" % time.strftime("\x0309%H:%M:%S \x0312%d.%m.%Y"))
+	def timez(self, event):
+		time_fmt = "\x0309%H:%M:%S \x0312%d.%m.%Y %Z"
+		if len(event.args) > 0 and pytz_available:
+			try:
+				if len(event.args) == 1:
+					timehandle = datetime.datetime.now(pytz.timezone(event.args[0]))
+				msg(event.channel.msg, "TIME", timehandle.strftime(time_fmt))
+			except pytz.exceptions.UnknownTimeZoneError:
+				warn(event.channel.msg, "Unknown Timezone")
+		else:
+			msg(event.channel.msg, "The local time is: %s" % time.strftime(time_fmt))
 
+	"""
+		TODO:
+		* Fetch subreddit-title/description
+	"""
 	@bones.event.handler(event=bones.event.PrivmsgEvent)
 	def stringResponses(self, event):
 		msg_str = re.sub("\x02|\x1f|\x1d|\x16|\x0f|\x03\d{0,2}(,\d{0,2})?", "", event.msg)
@@ -184,7 +210,7 @@ class misc(Module):
 			if not "reddit.com" in event.msg.lower():
 				try:
 					subreddit =  "/r/" + re.match("[^.]*(\A|\s)+/?r/(\w+)", msg_str).group(2)
-					subreddit_url = "http://reddit.com" + subreddit
+					subreddit_url = "https://reddit.com" + subreddit
 					if len(subreddit) > 3:
 						msg(event.channel.msg, "reddit \x0311::\x03 %s \x0311::\x03 %s" % 
 							(subreddit, subreddit_url))
