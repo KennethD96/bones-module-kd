@@ -211,7 +211,7 @@ class misc(Module):
 		if len(event.args) > 0 and pytz_available:
 			try:
 				tz = autoCase(event.args[0])
-				if len(event.args) > 1:
+				if len(event.args) > 0:
 					timehandle = datetime.datetime.now(pytz.timezone(tz))
 				msg(event.channel.msg, "TIME", "The time for \"%s\":" % tz)
 				msg(event.channel.msg, "TIME", timehandle.strftime(time_fmt))
