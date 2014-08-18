@@ -19,6 +19,7 @@ class math(Module):
 	def __init__(self, *args, **kwargs):
 		Module.__init__(self, *args, **kwargs)
 		
+	""" Calc """
 	@bones.event.handler(trigger="calc")
 	@bones.event.handler(trigger="cc")
 	def cmdCalc(self, event):
@@ -52,6 +53,7 @@ class math(Module):
 		else:
 			warn(event.channel.msg, "You must provide a equation.")
 
+	""" bcon """
 	@bones.event.handler(trigger="bcon")
 	@bones.event.handler(trigger="hex")
 	@bones.event.handler(trigger="bin")
@@ -145,7 +147,9 @@ class misc(Module):
 		Module.__init__(self, *args, **kwargs)
 		self.ongoingPings = {}
 		self.prefixChars = self.settings.get("bot", "triggerPrefixes")
+		self.time_fmt = "\x0309%H:%M:%S \x0312%d.%m.%Y %Z"
 
+	""" password """
 	@bones.event.handler(trigger="pw")
 	@bones.event.handler(trigger="password")
 	def cmdPW(self, event):
@@ -164,6 +168,7 @@ class misc(Module):
 		else:
 			event.user.notice('Here you go: %s' % rand)
 			
+	""" TG """
 	@bones.event.handler(trigger="tg")
 	@bones.event.handler(trigger="tg15")
 	def timetoTG14(self, event):
@@ -182,45 +187,58 @@ class misc(Module):
 				(str(tg15_end.days), str(tg15_end.seconds//3600), str(tg15_end.seconds//60%60)))
 
 	"""
+		timeTool
+		
 		TODO:
+		* Add user-selection of timezones when country-code gives more than one
 		* Add option to convert from spesific time/date
 	"""
 	@bones.event.handler(trigger="time")
-	def timez(self, event):
+	def timeTool(self, event):
 		def autoCase(string):
 			if "/" in string:
 				stringList = string.lower().split("/")
 				string = []
 				for stringTmp in stringList:
 					stringTmp = stringTmp.capitalize()
-					if "_" in stringTmp:
-						string_ = stringTmp.split("_")
+					if "_" or "-" in stringTmp:
+						if "-" in stringTmp:
+							dash = "-"
+						else:
+							dash = "_"
+						string_ = stringTmp.split(dash)
 						stringU = []
 						for stringE in string_:
 							stringU.append(stringE.capitalize())
-						stringTmp = "_".join(stringU)
+						stringTmp = dash.join(stringU)
 					string.append(stringTmp)
 				if len(string[0]) == 2:
 					string[0] = string[0].upper()
 				string = "/".join(string)
-			elif len(string) == 3:
+			else:
 				string = string.upper()
 			return string
 
-		time_fmt = "\x0309%H:%M:%S \x0312%d.%m.%Y %Z"
 		if len(event.args) > 0 and pytz_available:
 			try:
-				tz = autoCase(event.args[0])
+				if len(event.args[0]) == 2:
+					tz = str(pytz.country_timezones[event.args[0].lower()][0])
+				else:
+					tz = autoCase(event.args[0])
 				if len(event.args) > 0:
 					timehandle = datetime.datetime.now(pytz.timezone(tz))
 				msg(event.channel.msg, "TIME", "The time for \"%s\":" % tz)
-				msg(event.channel.msg, "TIME", timehandle.strftime(time_fmt))
+				msg(event.channel.msg, "TIME", timehandle.strftime(self.time_fmt))
 			except pytz.exceptions.UnknownTimeZoneError:
 				warn(event.channel.msg, "Unknown Timezone")
+			except KeyError:
+				warn(event.channel.msg, "Unknown Country-Code. See https://www.iso.org/obp/ui/#search/code/")
 		else:
 			msg(event.channel.msg, "The local time is: %s" % time.strftime(time_fmt))
 
 	"""
+		stringResponses
+
 		TODO:
 		* Fetch subreddit-title/description
 	"""

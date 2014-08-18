@@ -83,14 +83,16 @@ class responses(Module):
 		self.danceCooldownTime = None
 		self.privileged_users = ["KennethD", "_404`d", "Mathias"] # Users applicable for responses in the privileged_responses dictionary.
 		self.privileged_responses = {} # Contains a dictionary of responses available for privileged users only.
-		self.randomresponses = {} # Contains a dictionary of responses available to all users.
+		self.randomresponses = {
+			"hi everybody!":"Hi Dr. Nick!",
+		} # Contains a dictionary of responses available to all users.
 				
 	@bones.event.handler(event=bones.event.PrivmsgEvent)
 	def stringResponses(self, event):
 		msg_str = re.sub("\x02|\x1f|\x1d|\x16|\x0f|\x03\d{0,2}(,\d{0,2})?", "", event.msg)
 		for trigger, response in self.randomresponses.iteritems():
-			if msg_str.startswith(trigger):
+			if msg_str.lower().startswith(trigger):
 				event.channel.msg(response)
 		for trigger, response in self.privileged_responses.iteritems():
-			if msg_str.startswith(trigger) and event.user.nickname in self.privileged_users:
+			if msg_str.lower().startswith(trigger) and event.user.nickname in self.privileged_users:
 				event.channel.msg(response)
