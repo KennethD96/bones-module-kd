@@ -219,7 +219,9 @@ class misc(Module):
 				string = string.upper()
 			return string
 
-		if len(event.args) > 0 and pytz_available:
+		if len(event.args) > 0 and event.args[0].lower() == "unix":
+			msg(event.channel.msg, "TIME", "UNIX-timestamp: \x0312%s" % int(time.time()))
+		elif len(event.args) > 0 and pytz_available:
 			try:
 				if len(event.args[0]) == 2:
 					tz = str(pytz.country_timezones[event.args[0].lower()][0])
@@ -234,7 +236,7 @@ class misc(Module):
 			except KeyError:
 				warn(event.channel.msg, "Unknown Country-Code. See https://www.iso.org/obp/ui/#search/code/")
 		else:
-			msg(event.channel.msg, "The local time is: %s" % time.strftime(time_fmt))
+			msg(event.channel.msg, "The local time is: %s" % time.strftime(self.time_fmt))
 
 	"""
 		stringResponses
