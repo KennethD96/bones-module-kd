@@ -246,22 +246,23 @@ class mctools(Module):
     def mcColorCode(self, event):
         ValueisLegal = True
         if len(event.args) > 0:
-            input_args = "".join(event.args).split(arg_separator)
-            if len(input_args) == 1:
-                input_args.insert(0, "0")
-            if len(input_args) == 2:
-                input_args.insert(0, "0")
-            for i in input_args:
+            if "," in "".join(event.args):
+                event.args = "".join(event.args).split(arg_separator)
+            if len(event.args) == 1:
+                event.args.insert(0, "0")
+            if len(event.args) == 2:
+                event.args.insert(0, "0")
+            for i in event.args:
                 if i.isdigit() == 0 or int(i) > 255:
                     ValueisLegal = False
         else:
-            input_args = None
+            event.args = None
         
-        if input_args != None and ValueisLegal:
-            r, g, b = int(input_args[0]), int(input_args[1]), int(input_args[2])
+        if event.args != None and ValueisLegal:
+            r, g, b = int(event.args[0]), int(event.args[1]), int(event.args[2])
             formula = (r<<16) + (g<<8) + b
             msg(event.channel.msg, "MC-Color", "\x0314=\x03 " + str(formula))
-        elif input_args == None:
+        elif event.args == None:
             warn(event.channel.msg, "Specify a valid RGB Value.")
         else:
             error(event.channel.msg, "Input must be a valid RGB value.")
