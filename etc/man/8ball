@@ -1,0 +1,8 @@
+NAME
+        Magic 8-Ball
+
+SYNTAX
+        8ball, magic8 (Question)
+
+DESCRIPTION
+        A emulation of the famous Magic 8-Ball toy.

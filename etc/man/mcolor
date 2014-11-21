@@ -1,0 +1,9 @@
+NAME
+        Minecraft Color-Code Converter
+
+SYNTAX
+        mcolor [Red Value], [Green Value], (Blue value)
+
+DESCRIPTION
+        A converter from standard RGB decimal values to Minecraft's
+        JSON Tag format.

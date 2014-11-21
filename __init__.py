@@ -22,7 +22,7 @@ class core(Module):
             try:
                 if level[arg] < 2:
                     msg(event.channel.msg, "INFO", "System time:\x0309 %s" %
-                        (time.strftime("%d.%m.%Y %H:%m:%S %Z")))
+                        (time.strftime("%d.%m.%Y %H:%M:%S %Z")))
                 if level[arg] < 1:
                     msg(event.channel.msg, "INFO", "Running \x0309%s %s\x03 on \x0309%s" % 
                         (platform.python_implementation(), platform.python_version(), platform.node()))
