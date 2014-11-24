@@ -145,8 +145,6 @@ class math(Module):
 class misc(Module):
     def __init__(self, *args, **kwargs):
         Module.__init__(self, *args, **kwargs)
-        self.ongoingPings = {}
-        self.prefixChars = self.settings.get("bot", "triggerPrefixes")
         self.time_fmt = "\x0309%H:%M:%S \x0312%d.%m.%Y %Z"
 
     """ password """
@@ -257,7 +255,6 @@ class mctools(Module):
                     ValueisLegal = False
         else:
             event.args = None
-        
         if event.args != None and ValueisLegal:
             r, g, b = int(event.args[0]), int(event.args[1]), int(event.args[2])
             formula = (r<<16) + (g<<8) + b
@@ -266,6 +263,11 @@ class mctools(Module):
             warn(event.channel.msg, "Specify a valid RGB Value.")
         else:
             error(event.channel.msg, "Input must be a valid RGB value.")
+
+class responses(Module):
+    def __init__(self, *args, **kwargs):
+        Module.__init__(self, *args, **kwargs)
+        self.prefixChars = self.settings.get("bot", "triggerPrefixes")
 
     """
         stringResponses

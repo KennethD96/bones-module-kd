@@ -2,7 +2,7 @@
 
 module_name = "BONES-MODULE-KD_ESSENTIALS"
 module_version = "v0.0.2-DEV"
-module_date = "22. Nov 2014 00:55 CET"
+module_date = "24. Nov 2014 10:21 CET"
 
 import os, sys
 import string, random
