@@ -18,7 +18,7 @@ from __main__ import *
 class math(Module):
     def __init__(self, *args, **kwargs):
         Module.__init__(self, *args, **kwargs)
-        
+
     """ Calc """
     @bones.event.handler(trigger="calc")
     @bones.event.handler(trigger="cc")
@@ -29,7 +29,7 @@ class math(Module):
             "c=299792458",
             "pi=3.1415926535897932"
         ]
-        
+
         if event.args:
             try:
                 calc = Popen("bc", stdin=PIPE, stdout=PIPE)
@@ -40,7 +40,7 @@ class math(Module):
                     if len(line.strip("\n")) >= 1:
                         if len(line) < maxLen:
                             if line.rstrip("\n").isdigit():
-                                msg(event.channel.msg, prefix, "\x0314=\x03 %s" % 
+                                msg(event.channel.msg, prefix, "\x0314=\x03 %s" %
                                     "{0:,}".format(int(line)).replace(",", ",").strip("\n"))
                             else:
                                 msg(event.channel.msg, prefix, "\x0314=\x03 " + line)
@@ -64,7 +64,7 @@ class math(Module):
         if len(args) > 0:
             args[0] = re.sub('[^0-9a-zA-Z]+', ' ', args[0])
             event.args = [arg.strip() for arg in args[0].split(" ")]
-            
+
         TriggerEvent = event.match.group(2).lower()
         out_dec, out_hex, out_bin, out_ascii, dec_input = [],[],[],[],[]
         hex_chars, dec_chars, bin_chars = (
@@ -92,7 +92,7 @@ class math(Module):
                 elif event.args[0].lower() == "dec":
                     sourcebase = "10"
                     del event.args[0]
-                    
+
                 elif hex_chars.search("".join(event.args)):
                     sourcebase = "16"
                 elif dec_chars.search("".join(event.args)):
@@ -107,10 +107,10 @@ class math(Module):
                     out_dec.append(str(num))
                     out_hex.append(hex(num))
                     out_bin.append(bin(num))
-                    if len(args) > 1:   
+                    if len(args) > 1:
                         if args[1].lower().startswith(("ascii", "txt")):
                             out_ascii.append(hex(num).replace("0x", "").decode("hex"))
-                            
+
                 dec_out = " ".join(out_dec)
                 hex_out = " ".join(out_hex).replace("0x", "")
                 if len("".join(out_bin)) > 128:
@@ -119,7 +119,7 @@ class math(Module):
                 else:
                     string = " ".join(out_bin).replace("0b", "")
                 bin_out = string
-                
+
                 if len(args) > 1:
                     if args[1].lower().startswith(("dec", "10")):
                         msg(event.channel.msg, "Dec", dec_out)
@@ -165,7 +165,7 @@ class misc(Module):
                 event.user.notice('Here you go: %s' % rand)
         else:
             event.user.notice('Here you go: %s' % rand)
-            
+
     """ TG """
     @bones.event.handler(trigger="tg")
     @bones.event.handler(trigger="tg15")
@@ -186,7 +186,7 @@ class misc(Module):
 
     """
         timeTool
-        
+
         TODO:
         * Add user-selection of timezones when country-code gives more than one
         * Add option to convert from spesific time/date
@@ -239,7 +239,8 @@ class misc(Module):
 class mctools(Module):
     def __init__(self, *args, **kwargs):
         Module.__init__(self, *args, **kwargs)
-    
+
+    """ MC Color Tool """
     @bones.event.handler(trigger="mcolor")
     def mcColorCode(self, event):
         ValueisLegal = True
@@ -284,7 +285,7 @@ class responses(Module):
                     subreddit =  "/r/" + re.match("[^.]*(\A|\s)+/?r/(\w+)", msg_str).group(2)
                     subreddit_url = "https://reddit.com" + subreddit
                     if len(subreddit) > 3:
-                        msg(event.channel.msg, "reddit \x0311::\x03 %s \x0311::\x03 %s" % 
+                        msg(event.channel.msg, "reddit \x0311::\x03 %s \x0311::\x03 %s" %
                             (subreddit, subreddit_url))
                 except AttributeError:
                     pass
