@@ -12,14 +12,14 @@ from __main__ import *
 class triggers(Module):
     def __init__(self, *args, **kwargs):
         Module.__init__(self, *args, **kwargs)
-        
+
     @bones.event.handler(trigger="killstreak")
     @bones.event.handler(trigger="kill")
     def cmdKillstreak(self, event):
             args = [arg.strip() for arg in " ".join(event.args).split(arg_separator)]
             target = event.user.nickname
             player = random.choice(event.channel.users).nickname
-            
+
             materials = ["Wooden", "Stone", "Iron", "Golden", "Diamond"]
             tools = ["Sword", "Pickaxe", "Axe"]
             other = ["Diretide", "ahue", "Java™"]
@@ -86,7 +86,7 @@ class responses(Module):
         self.randomresponses = {
             "hi everybody!":"Hi Dr. Nick!",
         } # Contains a dictionary of responses available to all users.
-                
+
     @bones.event.handler(event=bones.event.PrivmsgEvent)
     def stringResponses(self, event):
         msg_str = re.sub("\x02|\x1f|\x1d|\x16|\x0f|\x03\d{0,2}(,\d{0,2})?", "", event.msg)

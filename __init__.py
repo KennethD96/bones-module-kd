@@ -15,7 +15,7 @@ class core(Module):
             "info": 1,
             "debug": 0,
         }
-        msg(event.channel.msg, "INFO", "%s \x0309%s \x0312(%s)" % 
+        msg(event.channel.msg, "INFO", "%s \x0309%s \x0312(%s)" %
             (module_name, module_version, module_date))
         if len(event.args) > 0:
             arg = event.args[0].lower()
@@ -24,7 +24,7 @@ class core(Module):
                     msg(event.channel.msg, "INFO", "System time:\x0309 %s" %
                         (time.strftime("%d.%m.%Y %H:%M:%S %Z")))
                 if level[arg] < 1:
-                    msg(event.channel.msg, "INFO", "Running \x0309%s %s\x03 on \x0309%s" % 
+                    msg(event.channel.msg, "INFO", "Running \x0309%s %s\x03 on \x0309%s" %
                         (platform.python_implementation(), platform.python_version(), platform.node()))
                     msg(event.channel.msg, "INFO", "OS: \x0312%s %s" %
                         (platform.system(), platform.release()))

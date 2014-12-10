@@ -30,7 +30,7 @@ def msg(event, string1, string2=False):
         if string2 != False:
             for line in string2.split("\n"):
                 if len(line) != 0:
-                    event("%s\x0315[%s\x0315]\x03 %s" % 
+                    event("%s\x0315[%s\x0315]\x03 %s" %
                         (prefix, string1, line))
         else:
             for line in string1.split("\n"):
@@ -41,7 +41,7 @@ def error(event, string):
     errPrefix = "\x034[Error]\x03 "
     for line in string.split("\n"):
         event(errPrefix + line)
-    
+
 def warn(event, string):
     warnPrefix = "\x038[Warning]\x03 "
     for line in string.split("\n"):

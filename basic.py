@@ -15,7 +15,7 @@ class help(Module):
         with open(os.path.join(etc_path, "help.txt"), "r") as helpfile:
             helpTxt = helpfile.read()
         msg(event.user.msg, helpTxt.rstrip("\n"))
-        
+
     @bones.event.handler(trigger="man")
     def cmdMan(self, event):
         if event.args:
@@ -33,7 +33,7 @@ class help(Module):
 class misc(Module):
     def __init__(self, *args, **kwargs):
         Module.__init__(self, *args, **kwargs)
-            
+
     @bones.event.handler(trigger="motd")
     @bones.event.handler(event=bones.event.UserJoinEvent)
     def motd(self, event):
