@@ -218,7 +218,7 @@ class misc(Module):
             return string
 
         if len(event.args) > 0 and event.args[0].lower() == "unix":
-            msg(event.channel.msg, "TIME", "UNIX-timestamp: \x0312%s" % int(time.time()))
+            msg(event.channel.msg, "TIME", "UNIX-timestamp: \x0309%s" % int(time.time()))
         elif len(event.args) > 0 and pytz_available:
             try:
                 if len(event.args[0]) == 2:
