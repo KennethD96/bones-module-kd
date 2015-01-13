@@ -169,27 +169,32 @@ class misc(Module):
     """ TG """
     @bones.event.handler(trigger="tg")
     @bones.event.handler(trigger="tg15")
-    def timetoTG14(self, event):
+    def timetoTG(self, event):
         tg15_start = (datetime.datetime(2015,4,1,9) - datetime.datetime.now())
         tg15_end = (datetime.datetime(2015,4,5,13) - datetime.datetime.now())
+        eventStr = "\x0312The Gathering 2015\x03"
+        def genTimeValueStr(targetdate):
+            timevalues = []
+            if targetdate.days > 0:
+                timevalues.append(  "\x0309%s\x03 dager," % str(targetdate.days))
+            if targetdate.seconds//3600 > 0:
+                timevalues.append(  "\x0309%s\x03 timer og" % str(targetdate.seconds//3600))
+            timevalues.append(      "\x0309%s\x03 minutter" % str(targetdate.seconds//60%60))
+            return(" ".join(timevalues))
+
         if tg15_start.total_seconds() > 0:
-            msg(event.channel.msg,
-                "Det er \x0309%s\x03 dager, \x0309%s\x03 timer og \x0309%s\x03 minutter til \x0312The Gathering 2015\x03!" %
-                (str(tg15_start.days), str(tg15_start.seconds//3600), str(tg15_start.seconds//60%60)))
+            msg(event.channel.msg, "Det er %s til %s!" % (genTimeValueStr(tg15_start), eventStr))
         elif tg15_end.total_seconds() < 1:
-            msg(event.channel.msg,
-                "\x0312The Gathering 2015\x03 er over!")
+            msg(event.channel.msg, "%s er over!" % eventStr)
         else:
-            msg(event.channel.msg,
-                "Det er \x0309%s\x03 dager, \x0309%s\x03 timer og \x0309%s\x03 minutter igjen av \x0312The Gathering 2015\x03!" %
-                (str(tg15_end.days), str(tg15_end.seconds//3600), str(tg15_end.seconds//60%60)))
+            msg(event.channel.msg, "Det er %s igjen av %s!" % (genTimeValueStr(tg15_end), eventStr))
 
     """
         timeTool
 
         TODO:
         * Add user-selection of timezones when country-code gives more than one
-        * Add option to convert from spesific time/date
+        * Add option to convert from specific time/date
     """
     @bones.event.handler(trigger="time")
     def timeTool(self, event):
