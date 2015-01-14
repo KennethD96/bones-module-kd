@@ -35,9 +35,9 @@ class triggers(Module):
                         messagefiles = ["deathmessages_weapons.txt"]
                         weapons = [args[1]]
             target, player, weapon = (
-                "\x0304" + target + "\x03",
-                "\x0304" + player + "\x03",
-                "\x0305" + random.choice(weapons) + "\x03",
+                "\x0304" + target + "\x0F",
+                "\x0304" + player + "\x0F",
+                "\x0305" + random.choice(weapons) + "\x0F",
             )
             with open(os.path.join(etc_path, "deathmessages", random.choice(messagefiles)), "r") as deathmessages:
                 deathmessage = random.choice(deathmessages.readlines())
@@ -86,6 +86,10 @@ class responses(Module):
         self.randomresponses = {
             "hi everybody!":"Hi Dr. Nick!",
         } # Contains a dictionary of responses available to all users.
+
+    @bones.event.handler(trigger="nsa")
+    def NSA(self, event):
+        event.channel.msg("Welcome to \x02\x0304The List\x0F, Mate.")
 
     @bones.event.handler(event=bones.event.PrivmsgEvent)
     def stringResponses(self, event):

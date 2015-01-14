@@ -2,7 +2,7 @@
 
 module_name = "BONES-MODULE-KD_ESSENTIALS"
 module_version = "v0.0.2-DEV"
-module_date = "14. Jan 2015 02:54 CET"
+module_date = "14. Jan 2015 08:50 CET"
 
 import os, sys
 import string, random
@@ -30,19 +30,19 @@ def msg(event, string1, string2=False):
         if string2 != False:
             for line in string2.split("\n"):
                 if len(line) != 0:
-                    event("%s\x0315[%s\x0315]\x03 %s" %
+                    event("%s\x0315[%s\x0315]\x0F %s" %
                         (prefix, string1, line))
         else:
             for line in string1.split("\n"):
                 if len(line) != 0:
-                    event("%s\x03 %s" % (prefix, line))
+                    event("%s\x0F %s" % (prefix, line))
 
 def error(event, string):
-    errPrefix = "\x034[Error]\x03 "
+    errPrefix = "\x034[Error]\x0F "
     for line in string.split("\n"):
         event(errPrefix + line)
 
 def warn(event, string):
-    warnPrefix = "\x038[Warning]\x03 "
+    warnPrefix = "\x038[Warning]\x0F "
     for line in string.split("\n"):
         event(warnPrefix + line)

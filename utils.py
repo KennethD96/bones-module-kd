@@ -35,15 +35,15 @@ class math(Module):
                 calc = Popen("bc", stdin=PIPE, stdout=PIPE)
                 calc_input = "".join(event.args).lower().replace(",", ".").encode('ascii')
                 result = "".join(calc.communicate("%s;%s\n" % (";".join(constants), calc_input))[0].split('\\\n'))
-                msg(event.channel.msg, prefix, "\x0314<\x03 %s" % calc_input)
+                msg(event.channel.msg, prefix, "\x0314<\x0F %s" % calc_input)
                 for line in result.split("\n"):
                     if len(line.strip("\n")) >= 1:
                         if len(line) < maxLen:
                             if line.rstrip("\n").isdigit():
-                                msg(event.channel.msg, prefix, "\x0314=\x03 %s" %
+                                msg(event.channel.msg, prefix, "\x0314=\x0F %s" %
                                     "{0:,}".format(int(line)).replace(",", ",").strip("\n"))
                             else:
-                                msg(event.channel.msg, prefix, "\x0314=\x03 " + line)
+                                msg(event.channel.msg, prefix, "\x0314=\x0F " + line)
                         else:
                             warn(event.channel.msg, "Result too long for chat. Protip: Try http://wolframalpha.com")
             except OSError:
@@ -170,17 +170,17 @@ class misc(Module):
     @bones.event.handler(trigger="tg")
     @bones.event.handler(trigger="tg15")
     def timetoTG(self, event):
-        eventStr = "\x0312The Gathering 2015\x03"
+        eventStr = "\x0312The Gathering 2015\x0F"
         tg15_start = (datetime.datetime(2015,4,1,9) - datetime.datetime.now())
         tg15_end = (datetime.datetime(2015,4,5,13) - datetime.datetime.now())
         def getCountdownValuesStr(targetdate):
             timevalues = []
             if targetdate.days > 0:
-                timevalues.append("\x0309%s\x03 dager" % str(targetdate.days))
+                timevalues.append("\x0309%s\x0F dager" % str(targetdate.days))
             if targetdate.seconds//3600 > 0:
-                timevalues.append("\x0309%s\x03 timer" % str(targetdate.seconds//3600))
+                timevalues.append("\x0309%s\x0F timer" % str(targetdate.seconds//3600))
             if targetdate.seconds//60%60 > 0 or targetdate.total_seconds() <= 60:
-                timevalues.append("\x0309%s\x03 minutter" % str(targetdate.seconds//60%60))
+                timevalues.append("\x0309%s\x0F minutter" % str(targetdate.seconds//60%60))
             if len(timevalues) > 1:
                 timevalues.reverse()
                 timevalues.insert(1, "og")
@@ -274,7 +274,7 @@ class mctools(Module):
         if event.args != None and ValueisLegal:
             r, g, b = int(event.args[0]), int(event.args[1]), int(event.args[2])
             formula = (r<<16) + (g<<8) + b
-            msg(event.channel.msg, "MC-Color", "\x0314=\x03 " + str(formula))
+            msg(event.channel.msg, "MC-Color", "\x0314=\x0F " + str(formula))
         elif event.args == None:
             warn(event.channel.msg, "Specify a valid RGB Value.")
         else:
@@ -300,7 +300,7 @@ class responses(Module):
                     subreddit =  "/r/" + re.match("[^.]*(\A|\s)+/?r/(\w+)", msg_str).group(2)
                     subreddit_url = "https://reddit.com" + subreddit
                     if len(subreddit) > 3:
-                        msg(event.channel.msg, "reddit \x0311::\x03 %s \x0311::\x03 %s" %
+                        msg(event.channel.msg, "reddit \x0311::\x0F %s \x0311::\x0F %s" %
                             (subreddit, subreddit_url))
                 except AttributeError:
                     pass
