@@ -170,24 +170,34 @@ class misc(Module):
     @bones.event.handler(trigger="tg")
     @bones.event.handler(trigger="tg15")
     def timetoTG(self, event):
+        eventStr = "\x0312The Gathering 2015\x03"
         tg15_start = (datetime.datetime(2015,4,1,9) - datetime.datetime.now())
         tg15_end = (datetime.datetime(2015,4,5,13) - datetime.datetime.now())
-        eventStr = "\x0312The Gathering 2015\x03"
-        def genTimeValueStr(targetdate):
+        def getCountdownValuesStr(targetdate):
             timevalues = []
             if targetdate.days > 0:
-                timevalues.append(  "\x0309%s\x03 dager," % str(targetdate.days))
+                timevalues.append("\x0309%s\x03 dager" % str(targetdate.days))
             if targetdate.seconds//3600 > 0:
-                timevalues.append(  "\x0309%s\x03 timer og" % str(targetdate.seconds//3600))
-            timevalues.append(      "\x0309%s\x03 minutter" % str(targetdate.seconds//60%60))
+                timevalues.append("\x0309%s\x03 timer" % str(targetdate.seconds//3600))
+            if targetdate.seconds//60%60 > 0 or targetdate.total_seconds() <= 60:
+                timevalues.append("\x0309%s\x03 minutter" % str(targetdate.seconds//60%60))
+            if len(timevalues) > 1:
+                timevalues.reverse()
+                timevalues.insert(1, "og")
+                if len(timevalues) > 2:
+                    n = 3
+                    while n < len(timevalues):
+                        timevalues.insert(n, timevalues.pop(n) + ",")
+                        n = n + 1
+                timevalues.reverse()
             return(" ".join(timevalues))
 
         if tg15_start.total_seconds() > 0:
-            msg(event.channel.msg, "Det er %s til %s!" % (genTimeValueStr(tg15_start), eventStr))
+            msg(event.channel.msg, "Det er %s til %s!" % (getCountdownValuesStr(tg15_start), eventStr))
         elif tg15_end.total_seconds() < 1:
             msg(event.channel.msg, "%s er over!" % eventStr)
         else:
-            msg(event.channel.msg, "Det er %s igjen av %s!" % (genTimeValueStr(tg15_end), eventStr))
+            msg(event.channel.msg, "Det er %s igjen av %s!" % (getCountdownValuesStr(tg15_end), eventStr))
 
     """
         timeTool
