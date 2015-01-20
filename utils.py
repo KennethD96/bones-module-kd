@@ -112,7 +112,7 @@ class math(Module):
                             out_ascii.append(hex(num).replace("0x", "").decode("hex"))
 
                 dec_out = " ".join(out_dec)
-                hex_out = " ".join(out_hex).replace("0x", "")
+                hex_out = " ".join(out_hex).replace("0x", "").upper()
                 if len("".join(out_bin)) > 128:
                     decrease = len("".join(out_bin)) - 128
                     string = " ".join(out_bin).replace("0b", "").replace('', '')[:-decrease].upper() + "..."
@@ -122,19 +122,19 @@ class math(Module):
 
                 if len(args) > 1:
                     if args[1].lower().startswith(("dec", "10")):
-                        msg(event.channel.msg, "Dec", dec_out)
+                        msg(event.channel.msg, "DEC", dec_out)
                     elif args[1].lower().startswith(("hex", "16")):
-                        msg(event.channel.msg, "Hex", hex_out)
+                        msg(event.channel.msg, "HEX", hex_out)
                     elif args[1].lower().startswith(("bin", "2")):
-                        msg(event.channel.msg, "Bin", bin_out)
+                        msg(event.channel.msg, "BIN", bin_out)
                     elif args[1].lower().startswith(("ascii", "txt")):
                         msg(event.channel.msg, "TXT", "".join(out_ascii))
                     else:
                         warn(event.channel.msg, "Unknown output")
                 else:
-                    msg(event.channel.msg, "Dec", dec_out)
-                    msg(event.channel.msg, "Hex", hex_out)
-                    msg(event.channel.msg, "Bin", bin_out)
+                    msg(event.channel.msg, "DEC", dec_out)
+                    msg(event.channel.msg, "HEX", hex_out)
+                    msg(event.channel.msg, "BIN", bin_out)
             except ValueError:
                 error(event.channel.msg, "Invalid number")
             except TypeError:
