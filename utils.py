@@ -22,6 +22,7 @@ class math(Module):
     """ Calc """
     @bones.event.handler(trigger="calc")
     @bones.event.handler(trigger="cc")
+    @bones.event.handler(trigger="bc")
     def cmdCalc(self, event):
         prefix = "CALC"
         maxLen = 275
@@ -166,21 +167,29 @@ class misc(Module):
         else:
             event.user.notice('Here you go: %s' % rand)
 
-    """ TG """
+    """ Countdown """
     @bones.event.handler(trigger="tg")
     @bones.event.handler(trigger="tg15")
-    def timetoTG(self, event):
-        eventStr = "\x0312The Gathering 2015\x0F"
-        tg15_start = (datetime.datetime(2015,4,1,9) - datetime.datetime.now())
-        tg15_end = (datetime.datetime(2015,4,5,13) - datetime.datetime.now())
-        def getCountdownValuesStr(targetdate):
+    @bones.event.handler(trigger="countdown")
+    def countdown(self, event):
+        utc = pytz.utc
+        events = {
+            "tg15": {
+                "titlestr":"\x0312The Gathering 2015",
+                "start":datetime.datetime(2015,4,1,7, tzinfo=utc),
+                "end":datetime.datetime(2015,4,5,11, tzinfo=utc),
+                "tzinfo":pytz.timezone("Europe/Oslo")
+            }
+        }
+        def getCountdownValuesStr(targetdate, tz=utc):
             timevalues = []
-            if targetdate.days > 0:
-                timevalues.append("\x0309%s\x0F dager" % str(targetdate.days))
-            if targetdate.seconds//3600 > 0:
-                timevalues.append("\x0309%s\x0F timer" % str(targetdate.seconds//3600))
-            if targetdate.seconds//60%60 > 0 or targetdate.total_seconds() <= 60:
-                timevalues.append("\x0309%s\x0F minutter" % str(targetdate.seconds//60%60))
+            timeremaining = targetdate.astimezone(tz) - datetime.datetime.now(tz)
+            if timeremaining.days > 0:
+                timevalues.append("\x0309%s\x0F dager" % str(timeremaining.days))
+            if timeremaining.seconds//3600 > 0:
+                timevalues.append("\x0309%s\x0F timer" % str(timeremaining.seconds//3600))
+            if timeremaining.seconds//60%60 > 0 or timeremaining.total_seconds() <= 60:
+                timevalues.append("\x0309%s\x0F minutter" % str(timeremaining.seconds//60%60))
             if len(timevalues) > 1:
                 timevalues.reverse()
                 timevalues.insert(1, "og")
@@ -192,12 +201,30 @@ class misc(Module):
                 timevalues.reverse()
             return(" ".join(timevalues))
 
-        if tg15_start.total_seconds() > 0:
-            msg(event.channel.msg, "Det er %s til %s!" % (getCountdownValuesStr(tg15_start), eventStr))
-        elif tg15_end.total_seconds() < 1:
-            msg(event.channel.msg, "%s er over!" % eventStr)
-        else:
-            msg(event.channel.msg, "Det er %s igjen av %s!" % (getCountdownValuesStr(tg15_end), eventStr))
+        try:
+            triggerEvent = event.match.group(2).lower()
+            if "tg" in triggerEvent or "tg15" in triggerEvent:
+                cEvent = events["tg15"]
+            elif len(event.args) > 0:
+                cEvent = events[event.args[0].lower()]
+            else:
+                cEvent = None
+
+            if cEvent:
+                remainingtime = {
+                    "start":cEvent["start"] - datetime.datetime.now(utc),
+                    "end":cEvent["end"] - datetime.datetime.now(utc)
+                }
+                if remainingtime["start"].total_seconds() > 0:
+                    msg(event.channel.msg, "Det er %s til %s\x0F!" % (getCountdownValuesStr(cEvent["start"], cEvent["tzinfo"]), cEvent["titlestr"]))
+                elif remainingtime["end"].total_seconds() < 1:
+                    msg(event.channel.msg, "%s er over!" % cEvent["titlestr"])
+                else:
+                    msg(event.channel.msg, "Det er %s igjen av %s\x0F!" % (getCountdownValuesStr(cEvent["end"], cEvent["tzinfo"]), cEvent["titlestr"]))
+            else:
+                msg(event.channel.msg, "Countdown", "Usage: !countdown [Event]")
+        except KeyError:
+            warn(event.channel.msg, "Unknown Event")
 
     """
         timeTool
