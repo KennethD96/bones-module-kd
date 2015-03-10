@@ -178,12 +178,19 @@ class misc(Module):
                 "titlestr":"\x0312The Gathering 2015",
                 "start":datetime.datetime(2015,4,1,7, tzinfo=utc),
                 "end":datetime.datetime(2015,4,5,11, tzinfo=utc),
-                "tzinfo":pytz.timezone("Europe/Oslo")
+                "aliases":["tg", "gathering"]
+            },
+            "2016": {
+                "titlestr":"\x03092016",
+                "start":datetime.datetime(2015,12,31,23, tzinfo=utc),
+                "end":datetime.datetime(2016,12,31,23, tzinfo=utc),
+                "aliases":[]
             }
         }
-        def getCountdownValuesStr(targetdate, tz=utc):
+
+        def countdownStrValues(targetdate):
             timevalues = []
-            timeremaining = targetdate.astimezone(tz) - datetime.datetime.now(tz)
+            timeremaining = targetdate.astimezone(utc) - datetime.datetime.now(utc)
             if timeremaining.days > 0:
                 timevalues.append("\x0309%s\x0F dager" % str(timeremaining.days))
             if timeremaining.seconds//3600 > 0:
@@ -202,25 +209,37 @@ class misc(Module):
             return(" ".join(timevalues))
 
         try:
+            cEvent = None
             triggerEvent = event.match.group(2).lower()
-            if "tg" in triggerEvent or "tg15" in triggerEvent:
-                cEvent = events["tg15"]
-            elif len(event.args) > 0:
-                cEvent = events[event.args[0].lower()]
-            else:
-                cEvent = None
+            if len(event.args) > 0:
+                arg = event.args[0].lower()
+                for i, k in events.iteritems():
+                    if arg == i or arg in k["aliases"]:
+                        cEvent = events[i]
+            for i, k in events.iteritems():
+                if triggerEvent == i or triggerEvent in k["aliases"]:
+                    cEvent = events[i]
+
+            if cEvent == None and len(event.args) > 0:
+                raise KeyError
 
             if cEvent:
                 remainingtime = {
-                    "start":cEvent["start"] - datetime.datetime.now(utc),
-                    "end":cEvent["end"] - datetime.datetime.now(utc)
+                    "start":cEvent["start"].astimezone(utc) - datetime.datetime.now(utc),
+                    "end":cEvent["end"].astimezone(utc) - datetime.datetime.now(utc)
                 }
                 if remainingtime["start"].total_seconds() > 0:
-                    msg(event.channel.msg, "Det er %s til %s\x0F!" % (getCountdownValuesStr(cEvent["start"], cEvent["tzinfo"]), cEvent["titlestr"]))
+                    msg(event.channel.msg, "Det er %s til %s\x0F!" % (
+                        countdownStrValues(cEvent["start"]), cEvent["titlestr"]
+                        )
+                    )
                 elif remainingtime["end"].total_seconds() < 1:
                     msg(event.channel.msg, "%s er over!" % cEvent["titlestr"])
                 else:
-                    msg(event.channel.msg, "Det er %s igjen av %s\x0F!" % (getCountdownValuesStr(cEvent["end"], cEvent["tzinfo"]), cEvent["titlestr"]))
+                    msg(event.channel.msg, "Det er %s igjen av %s\x0F!" % (
+                        countdownStrValues(cEvent["end"]), cEvent["titlestr"]
+                        )
+                    )
             else:
                 msg(event.channel.msg, "Countdown", "Usage: !countdown [Event]")
         except KeyError:
