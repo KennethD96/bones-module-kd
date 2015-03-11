@@ -172,23 +172,22 @@ class misc(Module):
     @bones.event.handler(trigger="tg15")
     @bones.event.handler(trigger="countdown")
     def countdown(self, event):
-        utc = pytz.utc
         events = {
             "tg15": {
                 "titlestr":"\x0312The Gathering 2015",
-                "start":datetime.datetime(2015,4,1,7, tzinfo=utc),
-                "end":datetime.datetime(2015,4,5,11, tzinfo=utc),
+                "start":datetime.datetime(2015,4,1,7),
+                "end":datetime.datetime(2015,4,5,11),
                 "aliases":["tg", "gathering"]
             },
             "2016": {
                 "titlestr":"\x03092016",
-                "start":datetime.datetime(2015,12,31,23, tzinfo=utc),
-                "end":datetime.datetime(2016,12,31,23, tzinfo=utc),
+                "start":datetime.datetime(2015,12,31,23),
+                "end":datetime.datetime(2016,12,31,23)
             }
         }
 
         def countdownStrValues(targetdate, timevalues=[]):
-            timeremaining = targetdate - datetime.datetime.now(utc)
+            timeremaining = targetdate - datetime.datetime.utcnow()
             if timeremaining.days > 0:
                 timevalues.append("\x0309%s\x0F dager" % str(timeremaining.days))
             if timeremaining.seconds//3600 > 0:
@@ -210,8 +209,7 @@ class misc(Module):
             cEvent = None
             triggerEvent = event.match.group(2).lower()
             for i, k in events.iteritems():
-                k["aliases"] = k["aliases"] if "aliases" in k else []
-                aliases = k["aliases"] + [i]
+                aliases = k["aliases"] + [i] if "aliases" in k else [i]
                 if len(event.args) > 0 and cEvent == None:
                     arg = event.args[0].lower()
                     if arg in aliases:
@@ -224,8 +222,8 @@ class misc(Module):
 
             if cEvent:
                 remainingtime = {
-                    "start":cEvent["start"] - datetime.datetime.now(utc),
-                    "end":cEvent["end"] - datetime.datetime.now(utc)
+                    "start":cEvent["start"] - datetime.datetime.utcnow(),
+                    "end":cEvent["end"] - datetime.datetime.utcnow()
                 }
                 if remainingtime["start"].total_seconds() > 0:
                     msg(event.channel.msg, "Det er %s til %s\x0F!" % (
