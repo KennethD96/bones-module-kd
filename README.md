@@ -12,6 +12,7 @@ A simple module for Bones IRC-Bot featuring:
 - Minecraft Color-Code converter to use with the JSON tag format.
 - Clock with time-zone support (ISO 3166-1 alpha-2 or the "Region/City" format) as well as UNIX-timestamp.
 - Magic 8-Ball emulator
+- Customizable countdown timer
 
 For more information on the triggers consult the manual pages in the `etc/man` directory or the 'man' trigger.
 
