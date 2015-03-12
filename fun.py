@@ -81,11 +81,11 @@ class responses(Module):
         Module.__init__(self, *args, **kwargs)
         self.danceCooldown = {}
         self.danceCooldownTime = None
-        self.privileged_users = ["KennethD", "_404`d", "Mathias"] # Users applicable for responses in the privileged_responses dictionary.
-        self.privileged_responses = {} # Contains a dictionary of responses available for privileged users only.
+        self.privileged_users = ["KennethD", "_404`d", "Mathias"]   # Users applicable for responses in the privileged_responses dictionary.
+        self.privileged_responses = {}                              # Contains a dictionary of responses available for privileged users only.
         self.randomresponses = {
             "hi everybody!":"Hi Dr. Nick!",
-        } # Contains a dictionary of responses available to all users.
+        }                                                           # Contains a dictionary of responses available to all users.
 
     @bones.event.handler(trigger="nsa")
     def NSA(self, event):

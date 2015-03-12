@@ -19,14 +19,13 @@ class math(Module):
     def __init__(self, *args, **kwargs):
         Module.__init__(self, *args, **kwargs)
 
-    """ Calc """
     @bones.event.handler(trigger="calc")
     @bones.event.handler(trigger="cc")
     @bones.event.handler(trigger="bc")
     def cmdCalc(self, event):
-        prefix = "CALC"
-        maxLen = 275
-        constants = [
+        """Calculator (Bench Calculator)"""
+        maxLen = 275                # Maximum output length
+        constants = [               # Pre-defined variables
             "c=299792458",
             "pi=3.1415926535897932"
         ]
@@ -36,15 +35,15 @@ class math(Module):
                 calc = Popen("bc", stdin=PIPE, stdout=PIPE)
                 calc_input = "".join(event.args).lower().replace(",", ".").encode('ascii')
                 result = "".join(calc.communicate("%s;%s\n" % (";".join(constants), calc_input))[0].split('\\\n'))
-                msg(event.channel.msg, prefix, "\x0314<\x0F %s" % calc_input)
+                msg(event.channel.msg, "CALC", "\x0314<\x0F %s" % calc_input)
                 for line in result.split("\n"):
                     if len(line.strip("\n")) >= 1:
                         if len(line) < maxLen:
                             if line.rstrip("\n").isdigit():
-                                msg(event.channel.msg, prefix, "\x0314=\x0F %s" %
+                                msg(event.channel.msg, "CALC", "\x0314=\x0F %s" %
                                     "{0:,}".format(int(line)).replace(",", ",").strip("\n"))
                             else:
-                                msg(event.channel.msg, prefix, "\x0314=\x0F " + line)
+                                msg(event.channel.msg, "CALC", "\x0314=\x0F " + line)
                         else:
                             warn(event.channel.msg, "Result too long for chat. Protip: Try http://wolframalpha.com")
             except OSError:
@@ -54,13 +53,13 @@ class math(Module):
         else:
             warn(event.channel.msg, "You must provide a equation.")
 
-    """ bcon """
     @bones.event.handler(trigger="bcon")
     @bones.event.handler(trigger="hex")
     @bones.event.handler(trigger="bin")
     @bones.event.handler(trigger="dec")
     def cmdBaseConverter(self, event):
-        global out_dec, out_hex, out_bin, dec_input
+        """Base Converter"""
+        # Create a list containing a string of all input values and the optional output format
         args = [arg.strip() for arg in " ".join(event.args).split(arg_separator)]
         if len(args) > 0:
             args[0] = re.sub('[^0-9a-zA-Z]+', ' ', args[0])
@@ -68,12 +67,14 @@ class math(Module):
 
         TriggerEvent = event.match.group(2).lower()
         out_dec, out_hex, out_bin, out_ascii, dec_input = [],[],[],[],[]
+        # Compile regex objects for valid characters of each base
         hex_chars, dec_chars, bin_chars = (
             re.compile("[a-f*]", re.I),
             re.compile("[2-9*]", re.I),
             re.compile("[0-1*]", re.I),
         )
 
+        # Select input base based on the trigger used
         if len(event.args) >= 1:
             if TriggerEvent == "hex":
                 sourcebase = "16"
@@ -81,10 +82,11 @@ class math(Module):
                 sourcebase = "2"
             elif TriggerEvent == "dec":
                 sourcebase = "10"
+            # If the first step fails look at the first input argument
             else:
                 if event.args[0].lower().startswith(("0x", "hex")):
-                    sourcebase = "16"
-                    if event.args[0].lower() == "hex":
+                    sourcebase = "16"                   # Set the base to the corresponding value of the match
+                    if event.args[0].lower() == "hex":  # Delete the first argument if is a match
                         del event.args[0]
                 elif event.args[0].lower().startswith(("0b", "bin")):
                     sourcebase = "2"
@@ -94,33 +96,39 @@ class math(Module):
                     sourcebase = "10"
                     del event.args[0]
 
+                # And if the second step fails try to detect the base automatically
                 elif hex_chars.search("".join(event.args)):
                     sourcebase = "16"
                 elif dec_chars.search("".join(event.args)):
                     sourcebase = "10"
                 elif bin_chars.search("".join(event.args)):
                     sourcebase = "2"
+
             try:
+                # Convert input values to decimal and separate them in a list
                 for num in event.args:
                     if len(num.strip(" ")) > 0:
                         dec_input.append(int(num, int(sourcebase)))
+                # Convert and place the items into lists with their hex and bin corresponding values
                 for num in dec_input:
                     out_dec.append(str(num))
                     out_hex.append(hex(num))
                     out_bin.append(bin(num))
+                    # If the output argument is set to "ascii" or "txt" convert them into a string
                     if len(args) > 1:
                         if args[1].lower().startswith(("ascii", "txt")):
                             out_ascii.append(hex(num).replace("0x", "").decode("hex"))
 
+                # Separate the values using spaces
                 dec_out = " ".join(out_dec)
                 hex_out = " ".join(out_hex).replace("0x", "").upper()
-                if len("".join(out_bin)) > 128:
+                if len("".join(out_bin)) > 128:         # Limit binary output to 128 characters
                     decrease = len("".join(out_bin)) - 128
-                    string = " ".join(out_bin).replace("0b", "").replace('', '')[:-decrease].upper() + "..."
+                    bin_out = " ".join(out_bin).replace("0b", "").replace('', '')[:-decrease].upper() + "..."
                 else:
-                    string = " ".join(out_bin).replace("0b", "")
-                bin_out = string
+                    bin_out = " ".join(out_bin).replace("0b", "")
 
+                # Print specified output value
                 if len(args) > 1:
                     if args[1].lower().startswith(("dec", "10")):
                         msg(event.channel.msg, "DEC", dec_out)
@@ -132,6 +140,7 @@ class math(Module):
                         msg(event.channel.msg, "TXT", "".join(out_ascii))
                     else:
                         warn(event.channel.msg, "Unknown output")
+                # If none specified print dec, hec and binary
                 else:
                     msg(event.channel.msg, "DEC", dec_out)
                     msg(event.channel.msg, "HEX", hex_out)
@@ -148,13 +157,17 @@ class misc(Module):
         Module.__init__(self, *args, **kwargs)
         self.time_fmt = "\x0309%H:%M:%S \x0312%d.%m.%Y %Z"
 
-    """ password """
     @bones.event.handler(trigger="pw")
     @bones.event.handler(trigger="password")
     def cmdPW(self, event):
-        maxLen = 256
-        tArgs = 16
-        chars = string.ascii_uppercase + string.ascii_lowercase + string.digits
+        """Password Generator"""
+        maxLen = 256                            # Maximum allowed password length
+        tArgs = 16                              # Default password length
+        chars = (                               # Characters to be used in the password
+                    string.ascii_uppercase +
+                    string.ascii_lowercase +
+                    string.digits
+        )
         rand = "".join(random.choice(chars) for x in range(tArgs))
         if len(event.args) > 0:
             if int(event.args[0]) > int(maxLen):
@@ -167,11 +180,20 @@ class misc(Module):
         else:
             event.user.notice('Here you go: %s' % rand)
 
-    """ Countdown """
     @bones.event.handler(trigger="tg")
     @bones.event.handler(trigger="tg15")
+    @bones.event.handler(trigger="2016")
     @bones.event.handler(trigger="countdown")
     def countdown(self, event):
+        """Countdown timer
+        Events must be specified in the events dictionary bellow with the event-id containing some attributes
+        Valid attributes are:
+        "titlestr" (Required) the title of the event
+        "start" (Required) a naive datetime object containing the start date/time
+        "end" (required) same as above but with the end date/time
+        "aliases" (optional) a list of triggers that can be used
+        *All dates must be specified in UTC
+        """
         events = {
             "tg15": {
                 "titlestr":"\x0312The Gathering 2015",
@@ -186,8 +208,8 @@ class misc(Module):
             }
         }
 
-        def countdownStrValues(targetdate, timevalues=[]):
-            timeremaining = targetdate - datetime.datetime.utcnow()
+        def countdownStrValues(timeremaining, timevalues=[]):
+            """Return a generated string with the days, hours and minutes left until timeremaining"""
             if timeremaining.days > 0:
                 timevalues.append("\x0309%s\x0F dager" % str(timeremaining.days))
             if timeremaining.seconds//3600 > 0:
@@ -208,33 +230,36 @@ class misc(Module):
         try:
             cEvent = None
             triggerEvent = event.match.group(2).lower()
+            # Search for the input argument/trigger in event dict and their aliases
             for i, k in events.iteritems():
-                aliases = k["aliases"] + [i] if "aliases" in k else [i]
-                if len(event.args) > 0 and cEvent == None:
+                aliases = k["aliases"] + [i] if "aliases" in k else [i] # Create aliases list if event doesn't have one
+                if len(event.args) > 0 and cEvent == None:  # Search with input argument, ignore if previous round succeeded
                     arg = event.args[0].lower()
                     if arg in aliases:
                         cEvent = events[i]
-                if triggerEvent in aliases:
+                if triggerEvent in aliases:                 # Same as above but with the input trigger
                     cEvent = events[i]
 
-            if cEvent == None and len(event.args) > 0:
+            if cEvent == None and len(event.args) > 0:      # Raise a KeyError exception if no event could be found
                 raise KeyError
 
             if cEvent:
+                # Calculate the remaining time to the event start/end
                 remainingtime = {
                     "start":cEvent["start"] - datetime.datetime.utcnow(),
                     "end":cEvent["end"] - datetime.datetime.utcnow()
                 }
+
                 if remainingtime["start"].total_seconds() > 0:
                     msg(event.channel.msg, "Det er %s til %s\x0F!" % (
-                        countdownStrValues(cEvent["start"]), cEvent["titlestr"]
+                        countdownStrValues(remainingtime["start"]), cEvent["titlestr"]
                         )
                     )
                 elif remainingtime["end"].total_seconds() < 1:
                     msg(event.channel.msg, "%s er over!" % cEvent["titlestr"])
                 else:
                     msg(event.channel.msg, "Det er %s igjen av %s\x0F!" % (
-                        countdownStrValues(cEvent["end"]), cEvent["titlestr"]
+                        countdownStrValues(remainingtime["end"]), cEvent["titlestr"]
                         )
                     )
             else:
@@ -242,16 +267,17 @@ class misc(Module):
         except KeyError:
             warn(event.channel.msg, "Unknown Event")
 
-    """
-        timeTool
-
-        TODO:
-        * Add user-selection of timezones when country-code gives more than one
-        * Add option to convert from specific time/date
-    """
     @bones.event.handler(trigger="time")
     def timeTool(self, event):
+        """World clock
+        TODO:
+        * Add user-selection of timezones when country-code returns more than one
+        * Add option to convert from specific time/date
+        """
         def autoCase(string):
+            """Capitalizes Region/City format inputs
+            and makes all letters in 2/3 letter Country-Codes upper-case
+            """
             if "/" in string:
                 stringList = string.lower().split("/")
                 string = []
@@ -275,8 +301,10 @@ class misc(Module):
                 string = string.upper()
             return string
 
+        # Print UNIX-Timestamp if input arg is "unix"
         if len(event.args) > 0 and event.args[0].lower() == "unix":
             msg(event.channel.msg, "TIME", "UNIX-timestamp: \x0309%s" % int(time.time()))
+        # Print time in specified time-zone if pytz is available
         elif len(event.args) > 0 and pytz_available:
             try:
                 if len(event.args[0]) == 2:
@@ -291,6 +319,7 @@ class misc(Module):
                 warn(event.channel.msg, "Unknown Timezone")
             except KeyError:
                 warn(event.channel.msg, "Unknown Country-Code. See https://www.iso.org/obp/ui/#search/code/")
+        # Print local-time if pytz is not available
         else:
             msg(event.channel.msg, "The local time is: %s" % time.strftime(self.time_fmt))
 
@@ -298,9 +327,9 @@ class mctools(Module):
     def __init__(self, *args, **kwargs):
         Module.__init__(self, *args, **kwargs)
 
-    """ MC Color Tool """
     @bones.event.handler(trigger="mcolor")
     def mcColorCode(self, event):
+        """Minecraft Color Code Generator"""
         ValueisLegal = True
         if len(event.args) > 0:
             if "," in "".join(event.args):
@@ -328,15 +357,15 @@ class responses(Module):
         Module.__init__(self, *args, **kwargs)
         self.prefixChars = self.settings.get("bot", "triggerPrefixes")
 
-    """
-        stringResponses
-
-        TODO:
-        * Fetch subreddit-title/description
-    """
     @bones.event.handler(event=bones.event.PrivmsgEvent)
     def stringResponses(self, event):
+        """Automatic String Responses
+        TODO:
+        * Reddit: Fetch subreddit-title/description
+        """
         msg_str = re.sub("\x02|\x1f|\x1d|\x16|\x0f|\x03\d{0,2}(,\d{0,2})?", "", event.msg)
+
+        # Reddit
         if "r/" in event.msg.lower() and not event.msg.lower().startswith(self.prefixChars):
             if not "reddit.com" in event.msg.lower():
                 try:
