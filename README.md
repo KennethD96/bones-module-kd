@@ -16,9 +16,12 @@ A simple module for Bones IRC-Bot featuring:
 
 For more information on the triggers consult the manual pages in the `etc/man` directory or the 'man' trigger.
 
+Requirements:
+- [Bones IRC Bot][bones] from the `feature/docs-and-cleanup` branch
+
 Installation:
  1. Clone or copy this repo to `bones_root_path/kd/essentials/`
  2. Add the modules of your choice to the config. (See `docs/sampleconf.ini` for examples)
  3. Start your bot
 
-Bones IRC-Bot: https://github.com/404d/Bones-IRCBot
+[bones]: https://github.com/404d/Bones-IRCBot
