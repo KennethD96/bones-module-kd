@@ -107,12 +107,11 @@ class responses(Module):
     def NSA(self, event):
         event.channel.msg("Welcome to \x02\x0304The List\x0F, Mate.")
 
-    @bones.event.handler(event=bones.event.PrivmsgEvent)
+    @bones.event.handler(event=bones.event.ChannelMessageEvent)
     def stringResponses(self, event):
         msg_str = re.sub(
             "\x02|\x1f|\x1d|\x16|\x0f|\x03\d{0,2}(,\d{0,2})?",
-            "",
-            event.msg
+            "", event.message
         )
         for trigger, response in self.randomresponses.iteritems():
             if msg_str.lower().startswith(trigger):

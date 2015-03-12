@@ -198,8 +198,7 @@ class misc(Module):
             if int(event.args[0]) > int(maxLen):
                 warn(
                     event.channel.msg,
-                    "Length must be a valid number between 1 and 256!"
-                )
+                    "Length must be a valid number between 1 and 256!")
             else:
                 tArgs = int(event.args[0])
                 tArgs = max(1, min(tArgs, maxLen))
@@ -291,7 +290,6 @@ class misc(Module):
                     "start": cEvent["start"] - datetime.datetime.utcnow(),
                     "end": cEvent["end"] - datetime.datetime.utcnow()
                 }
-
                 if remainingtime["start"].total_seconds() > 0:
                     msg(
                         event.channel.msg, "Det er %s til %s\x0F!" % (
@@ -299,7 +297,10 @@ class misc(Module):
                             cEvent["titlestr"])
                     )
                 elif remainingtime["end"].total_seconds() < 1:
-                    msg(event.channel.msg, "%s er over!" % cEvent["titlestr"])
+                    msg(
+                        event.channel.msg, "%s er over!" %
+                        cEvent["titlestr"]
+                    )
                 else:
                     msg(
                         event.channel.msg, "Det er %s igjen av %s\x0F!" % (
@@ -310,8 +311,8 @@ class misc(Module):
                 msg(
                     event.channel.msg,
                     "Countdown",
-                    "Usage: !countdown [Event]"
-                )
+                    "Usage: !countdown [Event]")
+
         except KeyError:
             warn(event.channel.msg, "Unknown Event")
 
@@ -420,30 +421,28 @@ class responses(Module):
         Module.__init__(self, *args, **kwargs)
         self.prefixChars = self.settings.get("bot", "triggerPrefixes")
 
-    @bones.event.handler(event=bones.event.PrivmsgEvent)
+    @bones.event.handler(event=bones.event.ChannelMessageEvent)
     def stringResponses(self, event):
         """Automatic String Responses"""
         msg_str = re.sub(
             "\x02|\x1f|\x1d|\x16|\x0f|\x03\d{0,2}(,\d{0,2})?",
-            "",
-            event.msg
+            "", event.message
         )
         # Reddit
-        if "r/" in event.msg.lower():
-            if not event.msg.lower().startswith(self.prefixChars):
-                if "reddit.com" not in event.msg.lower():
+        if "r/" in event.message.lower():
+            if not event.message.lower().startswith(self.prefixChars):
+                if "reddit.com" not in event.message.lower():
                     try:
                         subreddit = (
                             "/r/" + re.match(
                                 "[^.]*(\A|\s)+/?r/(\w+)",
-                                msg_str).group(2)
-                        )
+                                msg_str).group(2))
                         subreddit_url = "https://reddit.com" + subreddit
                         if len(subreddit) > 3:
                             msg(
                                 event.channel.msg,
                                 "reddit \x0311::\x0F %s \x0311::\x0F %s" %
-                                (subreddit, subreddit_url)
-                            )
+                                (subreddit, subreddit_url))
+
                     except AttributeError:
                         pass
