@@ -269,11 +269,7 @@ class misc(Module):
 
     @bones.event.handler(trigger="time")
     def timeTool(self, event):
-        """World clock
-        TODO:
-        * Add user-selection of timezones when country-code returns more than one
-        * Add option to convert from specific time/date
-        """
+        """World clock"""
         def autoCase(string):
             """Capitalizes Region/City format inputs
             and makes all letters in 2/3 letter Country-Codes upper-case
@@ -359,10 +355,7 @@ class responses(Module):
 
     @bones.event.handler(event=bones.event.PrivmsgEvent)
     def stringResponses(self, event):
-        """Automatic String Responses
-        TODO:
-        * Reddit: Fetch subreddit-title/description
-        """
+        """Automatic String Responses"""
         msg_str = re.sub("\x02|\x1f|\x1d|\x16|\x0f|\x03\d{0,2}(,\d{0,2})?", "", event.msg)
 
         # Reddit
