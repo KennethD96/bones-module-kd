@@ -1,9 +1,10 @@
 # encoding: utf-8
 import os
 
-import bones.event, logging
 from bones.bot import Module
 from __main__ import *
+import bones.event
+
 
 class help(Module):
     def __init__(self, *args, **kwargs):
@@ -29,6 +30,7 @@ class help(Module):
                 warn(event.channel.msg, "No manual entry by that name.")
         else:
             warn(event.channel.msg, "Please specify a manual page.")
+
 
 class misc(Module):
     def __init__(self, *args, **kwargs):

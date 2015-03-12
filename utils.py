@@ -1,19 +1,21 @@
 # encoding: utf-8
-import os
-import string, random, re
-import time, datetime
+from subprocess import Popen, PIPE
+import datetime
+import string
+import random
+import time
+import re
+
 try:
     import pytz
     pytz_available = True
 except ImportError:
     pytz_available = False
 
-import urllib
-from subprocess import Popen, PIPE
-
-import bones.event, logging
-from bones.bot import Module, urlopener
+from bones.bot import Module
 from __main__ import *
+import bones.event
+
 
 class math(Module):
     def __init__(self, *args, **kwargs):
@@ -33,19 +35,30 @@ class math(Module):
         if event.args:
             try:
                 calc = Popen("bc", stdin=PIPE, stdout=PIPE)
-                calc_input = "".join(event.args).lower().replace(",", ".").encode('ascii')
-                result = "".join(calc.communicate("%s;%s\n" % (";".join(constants), calc_input))[0].split('\\\n'))
+                calc_input = (
+                    "".join(event.args).lower()
+                    .replace(",", ".").encode('ascii'))
+                result = "".join(calc.communicate("%s;%s\n" % (
+                    ";".join(constants), calc_input))[0].split('\\\n'))
                 msg(event.channel.msg, "CALC", "\x0314<\x0F %s" % calc_input)
+
                 for line in result.split("\n"):
                     if len(line.strip("\n")) >= 1:
                         if len(line) < maxLen:
                             if line.rstrip("\n").isdigit():
-                                msg(event.channel.msg, "CALC", "\x0314=\x0F %s" %
-                                    "{0:,}".format(int(line)).replace(",", ",").strip("\n"))
+                                msg(
+                                    event.channel.msg, "CALC",
+                                    "\x0314=\x0F %s" %
+                                    "{0:,}".format(int(line))
+                                    .replace(",", ",").strip("\n"))
                             else:
-                                msg(event.channel.msg, "CALC", "\x0314=\x0F " + line)
+                                msg(
+                                    event.channel.msg, "CALC",
+                                    "\x0314=\x0F " + line)
                         else:
-                            warn(event.channel.msg, "Result too long for chat. Protip: Try http://wolframalpha.com")
+                            warn(
+                                event.channel.msg,
+                                "Result too long for chat. Try http://wolframalpha.com")
             except OSError:
                 logger.error("Could not fetch BC, is it installed?")
             except UnicodeDecodeError:
@@ -58,15 +71,21 @@ class math(Module):
     @bones.event.handler(trigger="bin")
     @bones.event.handler(trigger="dec")
     def cmdBaseConverter(self, event):
-        """Base Converter"""
-        # Create a list containing a string of all input values and the optional output format
-        args = [arg.strip() for arg in " ".join(event.args).split(arg_separator)]
+        """Base Converter
+        Create a list containing a string of all
+        input values and the optional output format
+        """
+        args = [
+            arg.strip() for arg in " ".join(event.args).split(arg_separator)
+        ]
         if len(args) > 0:
             args[0] = re.sub('[^0-9a-zA-Z]+', ' ', args[0])
             event.args = [arg.strip() for arg in args[0].split(" ")]
 
         TriggerEvent = event.match.group(2).lower()
-        out_dec, out_hex, out_bin, out_ascii, dec_input = [],[],[],[],[]
+        out_dec, out_hex, out_bin, out_ascii, dec_input = (
+            [], [], [], [], []
+        )
         # Compile regex objects for valid characters of each base
         hex_chars, dec_chars, bin_chars = (
             re.compile("[a-f*]", re.I),
@@ -85,8 +104,9 @@ class math(Module):
             # If the first step fails look at the first input argument
             else:
                 if event.args[0].lower().startswith(("0x", "hex")):
-                    sourcebase = "16"                   # Set the base to the corresponding value of the match
-                    if event.args[0].lower() == "hex":  # Delete the first argument if is a match
+                    sourcebase = "16"
+                    # Delete the first argument if is a match
+                    if event.args[0].lower() == "hex":
                         del event.args[0]
                 elif event.args[0].lower().startswith(("0b", "bin")):
                     sourcebase = "2"
@@ -114,17 +134,21 @@ class math(Module):
                     out_dec.append(str(num))
                     out_hex.append(hex(num))
                     out_bin.append(bin(num))
-                    # If the output argument is set to "ascii" or "txt" convert them into a string
+                    # If the output arg is set to "ascii" or "txt" convert them into a string
                     if len(args) > 1:
                         if args[1].lower().startswith(("ascii", "txt")):
-                            out_ascii.append(hex(num).replace("0x", "").decode("hex"))
+                            out_ascii.append(
+                                hex(num).replace("0x", "").decode("hex"))
 
                 # Separate the values using spaces
                 dec_out = " ".join(out_dec)
                 hex_out = " ".join(out_hex).replace("0x", "").upper()
-                if len("".join(out_bin)) > 128:         # Limit binary output to 128 characters
+                # Limit binary output to 128 characters
+                if len("".join(out_bin)) > 128:
                     decrease = len("".join(out_bin)) - 128
-                    bin_out = " ".join(out_bin).replace("0b", "").replace('', '')[:-decrease].upper() + "..."
+                    bin_out = (
+                        " ".join(out_bin).replace("0b", "").replace('', '')
+                        [:-decrease].upper() + "...")
                 else:
                     bin_out = " ".join(out_bin).replace("0b", "")
 
@@ -152,6 +176,7 @@ class math(Module):
         else:
             warn(event.channel.msg, "Usage: [Hex/Bin/Dec] Numbers to convert.")
 
+
 class misc(Module):
     def __init__(self, *args, **kwargs):
         Module.__init__(self, *args, **kwargs)
@@ -161,9 +186,9 @@ class misc(Module):
     @bones.event.handler(trigger="password")
     def cmdPW(self, event):
         """Password Generator"""
-        maxLen = 256                            # Maximum allowed password length
-        tArgs = 16                              # Default password length
-        chars = (                               # Characters to be used in the password
+        maxLen = 256  # Maximum allowed password length
+        tArgs = 16    # Default password length
+        chars = (     # Characters to be used in the password
                     string.ascii_uppercase +
                     string.ascii_lowercase +
                     string.digits
@@ -171,7 +196,10 @@ class misc(Module):
         rand = "".join(random.choice(chars) for x in range(tArgs))
         if len(event.args) > 0:
             if int(event.args[0]) > int(maxLen):
-                warn(event.channel.msg, "Length must be a valid number between 1 and 256!")
+                warn(
+                    event.channel.msg,
+                    "Length must be a valid number between 1 and 256!"
+                )
             else:
                 tArgs = int(event.args[0])
                 tArgs = max(1, min(tArgs, maxLen))
@@ -186,36 +214,46 @@ class misc(Module):
     @bones.event.handler(trigger="countdown")
     def countdown(self, event):
         """Countdown timer
-        Events must be specified in the events dictionary bellow with the event-id containing some attributes
+        Events must be specified in the events dictionary bellow
+        with the event-id containing some attributes
         Valid attributes are:
         "titlestr" (Required) the title of the event
-        "start" (Required) a naive datetime object containing the start date/time
+        "start" (Required) a naive datetime object containing the start date
         "end" (required) same as above but with the end date/time
         "aliases" (optional) a list of triggers that can be used
         *All dates must be specified in UTC
         """
         events = {
             "tg15": {
-                "titlestr":"\x0312The Gathering 2015",
-                "start":datetime.datetime(2015,4,1,7),
-                "end":datetime.datetime(2015,4,5,11),
-                "aliases":["tg", "gathering"]
+                "titlestr": "\x0312The Gathering 2015",
+                "start": datetime.datetime(2015, 4, 1, 7),
+                "end": datetime.datetime(2015, 4, 5, 11),
+                "aliases": ["tg", "gathering"]
             },
             "2016": {
-                "titlestr":"\x03092016",
-                "start":datetime.datetime(2015,12,31,23),
-                "end":datetime.datetime(2016,12,31,23)
+                "titlestr": "\x03092016",
+                "start": datetime.datetime(2015, 12, 31, 23),
+                "end": datetime.datetime(2016, 12, 31, 23)
             }
         }
 
         def countdownStrValues(timeremaining, timevalues=[]):
-            """Return a generated string with the days, hours and minutes left until timeremaining"""
+            """Return a generated string with the
+            days, hours and minutes left until timeremaining.
+            """
+            minleft = True if timeremaining.total_seconds() <= 60 else False
             if timeremaining.days > 0:
-                timevalues.append("\x0309%s\x0F dager" % str(timeremaining.days))
+                timevalues.append(
+                    "\x0309%s\x0F dager" %
+                    str(timeremaining.days))
             if timeremaining.seconds//3600 > 0:
-                timevalues.append("\x0309%s\x0F timer" % str(timeremaining.seconds//3600))
-            if timeremaining.seconds//60%60 > 0 or timeremaining.total_seconds() <= 60:
-                timevalues.append("\x0309%s\x0F minutter" % str(timeremaining.seconds//60%60))
+                timevalues.append(
+                    "\x0309%s\x0F timer" %
+                    str(timeremaining.seconds // 3600))
+            if timeremaining.seconds // 60 % 60 > 0 or minleft:
+                timevalues.append(
+                    "\x0309%s\x0F minutter" %
+                    str(timeremaining.seconds // 60 % 60))
             if len(timevalues) > 1:
                 timevalues.reverse()
                 timevalues.insert(1, "og")
@@ -230,40 +268,50 @@ class misc(Module):
         try:
             cEvent = None
             triggerEvent = event.match.group(2).lower()
-            # Search for the input argument/trigger in event dict and their aliases
+            # Search for the input arg/trigger in event dict and it's aliases.
             for i, k in events.iteritems():
-                aliases = k["aliases"] + [i] if "aliases" in k else [i] # Create aliases list if event doesn't have one
-                if len(event.args) > 0 and cEvent == None:  # Search with input argument, ignore if previous round succeeded
+                # Create aliases list if event doesn't have one
+                aliases = k["aliases"] + [i] if "aliases" in k else [i]
+                # Search with input arg, ignore if previous round succeeded
+                if len(event.args) > 0 and cEvent is None:
                     arg = event.args[0].lower()
                     if arg in aliases:
                         cEvent = events[i]
-                if triggerEvent in aliases:                 # Same as above but with the input trigger
+                # Same as above but with the input trigger
+                if triggerEvent in aliases:
                     cEvent = events[i]
 
-            if cEvent == None and len(event.args) > 0:      # Raise a KeyError exception if no event could be found
+            # Raise a KeyError exception if no event could be found
+            if cEvent is None and len(event.args) > 0:
                 raise KeyError
 
             if cEvent:
                 # Calculate the remaining time to the event start/end
                 remainingtime = {
-                    "start":cEvent["start"] - datetime.datetime.utcnow(),
-                    "end":cEvent["end"] - datetime.datetime.utcnow()
+                    "start": cEvent["start"] - datetime.datetime.utcnow(),
+                    "end": cEvent["end"] - datetime.datetime.utcnow()
                 }
 
                 if remainingtime["start"].total_seconds() > 0:
-                    msg(event.channel.msg, "Det er %s til %s\x0F!" % (
-                        countdownStrValues(remainingtime["start"]), cEvent["titlestr"]
-                        )
+                    msg(
+                        event.channel.msg, "Det er %s til %s\x0F!" % (
+                            countdownStrValues(remainingtime["start"]),
+                            cEvent["titlestr"])
                     )
                 elif remainingtime["end"].total_seconds() < 1:
                     msg(event.channel.msg, "%s er over!" % cEvent["titlestr"])
                 else:
-                    msg(event.channel.msg, "Det er %s igjen av %s\x0F!" % (
-                        countdownStrValues(remainingtime["end"]), cEvent["titlestr"]
-                        )
+                    msg(
+                        event.channel.msg, "Det er %s igjen av %s\x0F!" % (
+                            countdownStrValues(remainingtime["end"]),
+                            cEvent["titlestr"])
                     )
             else:
-                msg(event.channel.msg, "Countdown", "Usage: !countdown [Event]")
+                msg(
+                    event.channel.msg,
+                    "Countdown",
+                    "Usage: !countdown [Event]"
+                )
         except KeyError:
             warn(event.channel.msg, "Unknown Event")
 
@@ -299,7 +347,10 @@ class misc(Module):
 
         # Print UNIX-Timestamp if input arg is "unix"
         if len(event.args) > 0 and event.args[0].lower() == "unix":
-            msg(event.channel.msg, "TIME", "UNIX-timestamp: \x0309%s" % int(time.time()))
+            msg(
+                event.channel.msg, "TIME",
+                "UNIX-timestamp: \x0309%s" % int(time.time())
+            )
         # Print time in specified time-zone if pytz is available
         elif len(event.args) > 0 and pytz_available:
             try:
@@ -309,15 +360,27 @@ class misc(Module):
                     tz = autoCase(event.args[0])
                 if len(event.args) > 0:
                     timehandle = datetime.datetime.now(pytz.timezone(tz))
-                msg(event.channel.msg, "TIME", "The time for \"%s\":" % tz)
-                msg(event.channel.msg, "TIME", timehandle.strftime(self.time_fmt))
+                msg(
+                    event.channel.msg, "TIME",
+                    "The time for \"%s\":" % tz)
+                msg(
+                    event.channel.msg, "TIME",
+                    timehandle.strftime(self.time_fmt)
+                )
             except pytz.exceptions.UnknownTimeZoneError:
                 warn(event.channel.msg, "Unknown Timezone")
             except KeyError:
-                warn(event.channel.msg, "Unknown Country-Code. See https://www.iso.org/obp/ui/#search/code/")
+                warn(
+                    event.channel.msg,
+                    "Unknown Country-Code. See https://www.iso.org/obp/ui/#search/code/"
+                )
         # Print local-time if pytz is not available
         else:
-            msg(event.channel.msg, "The local time is: %s" % time.strftime(self.time_fmt))
+            msg(
+                event.channel.msg,
+                "The local time is: %s" % time.strftime(self.time_fmt)
+            )
+
 
 class mctools(Module):
     def __init__(self, *args, **kwargs):
@@ -339,14 +402,18 @@ class mctools(Module):
                     ValueisLegal = False
         else:
             event.args = None
-        if event.args != None and ValueisLegal:
-            r, g, b = int(event.args[0]), int(event.args[1]), int(event.args[2])
-            formula = (r<<16) + (g<<8) + b
+        if event.args is not None and ValueisLegal:
+            r, g, b = (
+                int(event.args[0]),
+                int(event.args[1]),
+                int(event.args[2]))
+            formula = (r << 16) + (g << 8) + b
             msg(event.channel.msg, "MC-Color", "\x0314=\x0F " + str(formula))
-        elif event.args == None:
+        elif event.args is None:
             warn(event.channel.msg, "Specify a valid RGB Value.")
         else:
             error(event.channel.msg, "Input must be a valid RGB value.")
+
 
 class responses(Module):
     def __init__(self, *args, **kwargs):
@@ -356,16 +423,27 @@ class responses(Module):
     @bones.event.handler(event=bones.event.PrivmsgEvent)
     def stringResponses(self, event):
         """Automatic String Responses"""
-        msg_str = re.sub("\x02|\x1f|\x1d|\x16|\x0f|\x03\d{0,2}(,\d{0,2})?", "", event.msg)
-
+        msg_str = re.sub(
+            "\x02|\x1f|\x1d|\x16|\x0f|\x03\d{0,2}(,\d{0,2})?",
+            "",
+            event.msg
+        )
         # Reddit
-        if "r/" in event.msg.lower() and not event.msg.lower().startswith(self.prefixChars):
-            if not "reddit.com" in event.msg.lower():
-                try:
-                    subreddit =  "/r/" + re.match("[^.]*(\A|\s)+/?r/(\w+)", msg_str).group(2)
-                    subreddit_url = "https://reddit.com" + subreddit
-                    if len(subreddit) > 3:
-                        msg(event.channel.msg, "reddit \x0311::\x0F %s \x0311::\x0F %s" %
-                            (subreddit, subreddit_url))
-                except AttributeError:
-                    pass
+        if "r/" in event.msg.lower():
+            if not event.msg.lower().startswith(self.prefixChars):
+                if "reddit.com" not in event.msg.lower():
+                    try:
+                        subreddit = (
+                            "/r/" + re.match(
+                                "[^.]*(\A|\s)+/?r/(\w+)",
+                                msg_str).group(2)
+                        )
+                        subreddit_url = "https://reddit.com" + subreddit
+                        if len(subreddit) > 3:
+                            msg(
+                                event.channel.msg,
+                                "reddit \x0311::\x0F %s \x0311::\x0F %s" %
+                                (subreddit, subreddit_url)
+                            )
+                    except AttributeError:
+                        pass

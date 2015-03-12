@@ -1,13 +1,13 @@
 # encoding: utf-8
-import os
-import string, re
-import time, datetime
 from subprocess import Popen, PIPE
+import random
+import re
+import os
 
-import bones.event, logging
+import bones.event
 from bones.bot import Module
-from twisted.internet import reactor
 from __main__ import *
+
 
 class triggers(Module):
     def __init__(self, *args, **kwargs):
@@ -16,14 +16,20 @@ class triggers(Module):
     @bones.event.handler(trigger="killstreak")
     @bones.event.handler(trigger="kill")
     def cmdKillstreak(self, event):
-            args = [arg.strip() for arg in " ".join(event.args).split(arg_separator)]
+            args = [
+                arg.strip() for arg in
+                " ".join(event.args).split(arg_separator)
+            ]
             target = event.user.nickname
             player = random.choice(event.channel.users).nickname
 
             materials = ["Wooden", "Stone", "Iron", "Golden", "Diamond"]
             tools = ["Sword", "Pickaxe", "Axe"]
             other = ["Diretide", "ahue", "Java™"]
-            weapons = [random.choice(materials) + " " + random.choice(tools), random.choice(other)]
+            weapons = [
+                random.choice(materials) + " " + random.choice(tools),
+                random.choice(other)
+            ]
             messagefiles = ["deathmessages.txt", "deathmessages_weapons.txt"]
             if len(event.args) >= 1:
                 if len(args[0].strip(" ")) >= 1:
@@ -39,7 +45,12 @@ class triggers(Module):
                 "\x0304" + player + "\x0F",
                 "\x0305" + random.choice(weapons) + "\x0F",
             )
-            with open(os.path.join(etc_path, "deathmessages", random.choice(messagefiles)), "r") as deathmessages:
+            randomdeathmessage = os.path.join(
+                etc_path,
+                "deathmessages",
+                random.choice(messagefiles)
+            )
+            with open(randomdeathmessage, "r") as deathmessages:
                 deathmessage = random.choice(deathmessages.readlines())
                 if "[target]" in deathmessage:
                     deathmessage = deathmessage.replace("[target]", target)
@@ -76,16 +87,21 @@ class triggers(Module):
         except OSError:
             logger.error("Could not fetch Fortune, is it installed?")
 
+
 class responses(Module):
     def __init__(self, *args, **kwargs):
         Module.__init__(self, *args, **kwargs)
         self.danceCooldown = {}
         self.danceCooldownTime = None
-        self.privileged_users = ["KennethD", "_404`d", "Mathias"]   # Users applicable for responses in the privileged_responses dictionary.
-        self.privileged_responses = {}                              # Contains a dictionary of responses available for privileged users only.
+        self.privileged_users = [
+            "KennethD",
+            "_404`d",
+            "Mathias"
+        ]
+        self.privileged_responses = {}
         self.randomresponses = {
-            "hi everybody!":"Hi Dr. Nick!",
-        }                                                           # Contains a dictionary of responses available to all users.
+            "hi everybody!": "Hi Dr. Nick!",
+        }
 
     @bones.event.handler(trigger="nsa")
     def NSA(self, event):
@@ -93,10 +109,15 @@ class responses(Module):
 
     @bones.event.handler(event=bones.event.PrivmsgEvent)
     def stringResponses(self, event):
-        msg_str = re.sub("\x02|\x1f|\x1d|\x16|\x0f|\x03\d{0,2}(,\d{0,2})?", "", event.msg)
+        msg_str = re.sub(
+            "\x02|\x1f|\x1d|\x16|\x0f|\x03\d{0,2}(,\d{0,2})?",
+            "",
+            event.msg
+        )
         for trigger, response in self.randomresponses.iteritems():
             if msg_str.lower().startswith(trigger):
                 event.channel.msg(response)
         for trigger, response in self.privileged_responses.iteritems():
-            if msg_str.lower().startswith(trigger) and event.user.nickname in self.privileged_users:
-                event.channel.msg(response)
+            if msg_str.lower().startswith(trigger):
+                if event.user.nickname in self.privileged_users:
+                    event.channel.msg(response)
