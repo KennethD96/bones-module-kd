@@ -4,8 +4,8 @@ import logging
 import os
 
 module_name = "BONES-MODULE-KD_ESSENTIALS"
-module_version = "v0.0.2-DEV"
-module_date = "12. Mar 2015 02:42 UTC"
+module_version = "v0.1.0-RELEASE"
+module_date = "12. Mar 2015 23:37 UTC"
 
 mod_path = os.path.dirname(__file__)
 etc_path = mod_path + "/etc/"
