@@ -4,7 +4,7 @@ import logging
 import os
 
 module_name = "BONES-MODULE-KD_ESSENTIALS"
-module_version = "v0.1.0-RELEASE"
+module_version = "v0.1.1-DEV"
 module_date = "12. Mar 2015 23:37 UTC"
 
 mod_path = os.path.dirname(__file__)

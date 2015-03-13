@@ -22,10 +22,23 @@ class triggers(Module):
             ]
             target = event.user.nickname
             player = random.choice(event.channel.users).nickname
-
-            materials = ["Wooden", "Stone", "Iron", "Golden", "Diamond"]
-            tools = ["Sword", "Pickaxe", "Axe"]
-            other = ["Diretide", "ahue", "Java™"]
+            materials = [
+                "Wooden",
+                "Stone",
+                "Iron",
+                "Golden",
+                "Diamond"
+            ]
+            tools = [
+                "Sword",
+                "Pickaxe",
+                "Axe"
+            ]
+            other = [
+                "Diretide",
+                "ahue",
+                "Java™"
+            ]
             weapons = [
                 random.choice(materials) + " " + random.choice(tools),
                 random.choice(other)
@@ -43,7 +56,7 @@ class triggers(Module):
             target, player, weapon = (
                 "\x0304" + target + "\x0F",
                 "\x0304" + player + "\x0F",
-                "\x0305" + random.choice(weapons) + "\x0F",
+                "\x0304" + random.choice(weapons) + "\x0F",
             )
             randomdeathmessage = os.path.join(
                 etc_path,

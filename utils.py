@@ -26,12 +26,11 @@ class math(Module):
     @bones.event.handler(trigger="bc")
     def cmdCalc(self, event):
         """Calculator (Bench Calculator)"""
-        maxLen = 275                # Maximum output length
-        constants = [               # Pre-defined variables
+        maxLen = 275    # Maximum output length
+        constants = [   # Pre-defined variables
             "c=299792458",
             "pi=3.1415926535897932"
         ]
-
         if event.args:
             try:
                 calc = Popen("bc", stdin=PIPE, stdout=PIPE)
