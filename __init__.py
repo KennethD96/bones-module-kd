@@ -11,23 +11,23 @@ class core(Module):
 
     @bones.event.handler(trigger="kdver")
     def return_ver(self, event):
-        level = {
+        LEVEL = {
             "info": 1,
             "debug": 0,
         }
         msg(event.channel.msg, "INFO", "%s \x0309%s \x0312(%s)" %
-            (module_name, module_version, module_date))
+            (MODULE_NAME, MODULE_VERSION, MODULE_DATE))
         if len(event.args) > 0:
             arg = event.args[0].lower()
             try:
-                if level[arg] < 2:
+                if LEVEL[arg] < 2:
                     msg(
                         event.channel.msg,
                         "INFO",
                         "System time:\x0309 %s" %
                         (time.strftime("%d.%m.%Y %H:%M:%S %Z"))
                     )
-                if level[arg] < 1:
+                if LEVEL[arg] < 1:
                     msg(
                         event.channel.msg,
                         "INFO",

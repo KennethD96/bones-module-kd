@@ -75,7 +75,7 @@ class math(Module):
         input values and the optional output format
         """
         args = [
-            arg.strip() for arg in " ".join(event.args).split(arg_separator)
+            arg.strip() for arg in " ".join(event.args).split(ARG_SEPARATOR)
         ]
         if len(args) > 0:
             args[0] = re.sub('[^0-9a-zA-Z]+', ' ', args[0])
@@ -179,7 +179,7 @@ class math(Module):
 class misc(Module):
     def __init__(self, *args, **kwargs):
         Module.__init__(self, *args, **kwargs)
-        self.time_fmt = "\x0309%H:%M:%S \x0312%d.%m.%Y %Z"
+        self.TIME_FMT = "\x0309%H:%M:%S \x0312%d.%m.%Y %Z"
 
     @bones.event.handler(trigger="pw")
     @bones.event.handler(trigger="password")
@@ -365,7 +365,7 @@ class misc(Module):
                     "The time for \"%s\":" % tz)
                 msg(
                     event.channel.msg, "TIME",
-                    timehandle.strftime(self.time_fmt)
+                    timehandle.strftime(self.TIME_FMT)
                 )
             except pytz.exceptions.UnknownTimeZoneError:
                 warn(event.channel.msg, "Unknown Timezone")
@@ -378,7 +378,7 @@ class misc(Module):
         else:
             msg(
                 event.channel.msg,
-                "The local time is: %s" % time.strftime(self.time_fmt)
+                "The local time is: %s" % time.strftime(self.TIME_FMT)
             )
 
 
@@ -392,7 +392,7 @@ class mctools(Module):
         ValueisLegal = True
         if len(event.args) > 0:
             if "," in "".join(event.args):
-                event.args = "".join(event.args).split(arg_separator)
+                event.args = "".join(event.args).split(ARG_SEPARATOR)
             if len(event.args) == 1:
                 event.args.insert(0, "0")
             if len(event.args) == 2:

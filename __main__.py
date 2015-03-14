@@ -1,20 +1,18 @@
 # encoding: utf-8
-import datetime
 import logging
 import os
 
-module_name = "BONES-MODULE-KD_ESSENTIALS"
-module_version = "v0.1.1-DEV"
-module_date = "12. Mar 2015 23:37 UTC"
+MODULE_NAME = "BONES-MODULE-KD_ESSENTIALS"
+MODULE_VERSION = "v0.1.1-DEV"
+MODULE_DATE = "14. Mar 2015 17:26 UTC"
 
-mod_path = os.path.dirname(__file__)
-etc_path = mod_path + "/etc/"
-cache_path = mod_path + "/cache/"
+MOD_PATH = os.path.dirname(__file__)
+ETC_PATH = MOD_PATH + "/etc/"
+CACHE_PATH = MOD_PATH + "/cache/"
 
-arg_separator = ","
+ARG_SEPARATOR = ","
 
-today = datetime.datetime.today()
-logger = logging.getLogger(module_name)
+logger = logging.getLogger(MODULE_NAME)
 
 
 def msg(event, string1, string2=False, prefix="\x0312[KD]"):

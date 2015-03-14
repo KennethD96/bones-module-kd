@@ -18,7 +18,7 @@ class triggers(Module):
     def cmdKillstreak(self, event):
             args = [
                 arg.strip() for arg in
-                " ".join(event.args).split(arg_separator)
+                " ".join(event.args).split(ARG_SEPARATOR)
             ]
             target = event.user.nickname
             player = random.choice(event.channel.users).nickname
@@ -59,7 +59,7 @@ class triggers(Module):
                 "\x0304" + random.choice(weapons) + "\x0F",
             )
             randomdeathmessage = os.path.join(
-                etc_path,
+                ETC_PATH,
                 "deathmessages",
                 random.choice(messagefiles)
             )
@@ -76,7 +76,7 @@ class triggers(Module):
     @bones.event.handler(trigger="magic8")
     @bones.event.handler(trigger="8ball")
     def magic8(self, event):
-        magic8_path = os.path.join(etc_path, "magic8.txt")
+        magic8_path = os.path.join(ETC_PATH, "magic8.txt")
         question = " ".join(event.args)
         if re.match(".+[?|？|؟|՞|;|;]\s*$", question):
             if os.path.exists(magic8_path):

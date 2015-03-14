@@ -13,7 +13,7 @@ class help(Module):
     @bones.event.handler(trigger="help")
     @bones.event.handler(trigger="h")
     def cmdHelp(self, event):
-        with open(os.path.join(etc_path, "help.txt"), "r") as helpfile:
+        with open(os.path.join(ETC_PATH, "help.txt"), "r") as helpfile:
             helpTxt = helpfile.read()
         msg(event.user.msg, helpTxt.rstrip("\n"))
 
@@ -21,7 +21,7 @@ class help(Module):
     def cmdMan(self, event):
         if event.args:
             manpage = event.args[0].lower()
-            manpath = os.path.join(etc_path, "man", manpage)
+            manpath = os.path.join(ETC_PATH, "man", manpage)
             if os.path.exists(manpath):
                 with open(os.path.join(manpath)) as manfile:
                     manpage = manfile.read()
@@ -39,7 +39,7 @@ class misc(Module):
     @bones.event.handler(trigger="motd")
     @bones.event.handler(event=bones.event.UserJoinEvent)
     def motd(self, event):
-        with open(os.path.join(etc_path, "motd.txt"), "r") as motdfile:
+        with open(os.path.join(ETC_PATH, "motd.txt"), "r") as motdfile:
             motd = motdfile.read()
         if len(motd) > 0:
             motd_lines = motd.split("\n")
