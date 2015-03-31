@@ -87,8 +87,8 @@ class triggers(Module):
                         magic8_response = random.choice(responses)
                     msg(event.channel.msg, "8-Ball", "\x03" + magic8_response)
         else:
-            msg(event.channel.
-                msg, "8-Ball", "Please give me a question.")
+            msg(event.channel.msg,
+                "8-Ball", "Please give me a question.")
 
     @bones.event.handler(trigger="fortune")
     def cmdFortune(self, event):

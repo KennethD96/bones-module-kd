@@ -208,6 +208,7 @@ class misc(Module):
 
     @bones.event.handler(trigger="tg")
     @bones.event.handler(trigger="tg15")
+    @bones.event.handler(trigger="tg16")
     @bones.event.handler(trigger="2016")
     @bones.event.handler(trigger="countdown")
     def countdown(self, event):
@@ -232,7 +233,13 @@ class misc(Module):
                 "titlestr": "\x03092016",
                 "start": datetime.datetime(2015, 12, 31, 23),
                 "end": datetime.datetime(2016, 12, 31, 23)
-            }
+            },
+            "tg16": {
+                "titlestr": "\x0304The Gathering 2016",
+                "start": datetime.datetime(2016, 3, 23, 8),
+                "end": datetime.datetime(2016, 3, 27, 10),
+                "aliases": ["The Gathering 2016", "Gathering 2016"]
+            },
         }
 
         def countdownStrValues(timeremaining, timevalues=[]):
@@ -269,10 +276,13 @@ class misc(Module):
             # Search for the input arg/trigger in event dict and it's aliases.
             for i, k in events.iteritems():
                 # Create aliases list if event doesn't have one
-                aliases = k["aliases"] + [i] if "aliases" in k else [i]
+                i, k1 = i.lower(), []
+                if "aliases" in k:
+                    for k2 in k["aliases"]: k1.append(k2.lower())
+                aliases = k1 + [i] if "aliases" in k else [i]
                 # Search with input arg, ignore if previous round succeeded
                 if len(event.args) > 0 and cEvent is None:
-                    arg = event.args[0].lower()
+                    arg = " ".join(event.args).lower()
                     if arg in aliases:
                         cEvent = events[i]
                 # Same as above but with the input trigger
