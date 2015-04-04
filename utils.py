@@ -226,7 +226,7 @@ class misc(Module):
             "tg15": {
                 "titlestr": "\x0312The Gathering 2015",
                 "start": datetime.datetime(2015, 4, 1, 7),
-                "end": datetime.datetime(2015, 4, 5, 11),
+                "end": datetime.datetime(2015, 4, 5, 9, 30),
                 "aliases": ["tg", "gathering"]
             },
             "2016": {
@@ -237,7 +237,7 @@ class misc(Module):
             "tg16": {
                 "titlestr": "\x0304The Gathering 2016",
                 "start": datetime.datetime(2016, 3, 23, 8),
-                "end": datetime.datetime(2016, 3, 27, 10),
+                "end": datetime.datetime(2016, 3, 27, 9, 30),
                 "aliases": ["The Gathering 2016", "Gathering 2016"]
             },
         }
@@ -269,6 +269,9 @@ class misc(Module):
                         n = n + 1
                 timevalues.reverse()
             return(" ".join(timevalues))
+
+        #def countdownStrValuesMin(timeremaning, timevalues=[]):
+        #
 
         try:
             cEvent = None
