@@ -188,9 +188,9 @@ class misc(Module):
         maxLen = 256  # Maximum allowed password length
         tArgs = 16    # Default password length
         chars = (     # Characters to be used in the password
-                    string.ascii_uppercase +
-                    string.ascii_lowercase +
-                    string.digits
+            string.ascii_uppercase +
+            string.ascii_lowercase +
+            string.digits
         )
         rand = "".join(random.choice(chars) for x in range(tArgs))
         if len(event.args) > 0:
@@ -207,7 +207,6 @@ class misc(Module):
             event.user.notice('Here you go: %s' % rand)
 
     @bones.event.handler(trigger="tg")
-    @bones.event.handler(trigger="tg15")
     @bones.event.handler(trigger="tg16")
     @bones.event.handler(trigger="2016")
     @bones.event.handler(trigger="countdown")
@@ -227,7 +226,7 @@ class misc(Module):
                 "titlestr": "\x0312The Gathering 2015",
                 "start": datetime.datetime(2015, 4, 1, 7),
                 "end": datetime.datetime(2015, 4, 5, 9, 30),
-                "aliases": ["tg", "gathering"]
+                "aliases": ["the gathering 2015"]
             },
             "2016": {
                 "titlestr": "\x03092016",
@@ -238,7 +237,10 @@ class misc(Module):
                 "titlestr": "\x0304The Gathering 2016",
                 "start": datetime.datetime(2016, 3, 23, 8),
                 "end": datetime.datetime(2016, 3, 27, 9, 30),
-                "aliases": ["The Gathering 2016", "Gathering 2016"]
+                "aliases": [
+                    "tg", "gathering",
+                    "The Gathering 2016", "Gathering 2016"
+                ]
             },
         }
 
@@ -270,7 +272,7 @@ class misc(Module):
                 timevalues.reverse()
             return(" ".join(timevalues))
 
-        #def countdownStrValuesMin(timeremaning, timevalues=[]):
+        #def countdownStrValuesMin(targetevent, timevalues=[]):
         #
 
         try:
@@ -306,24 +308,22 @@ class misc(Module):
                     msg(
                         event.channel.msg, "Det er %s til %s\x0F!" % (
                             countdownStrValues(remainingtime["start"]),
-                            cEvent["titlestr"])
-                    )
+                            cEvent["titlestr"]))
                 elif remainingtime["end"].total_seconds() < 1:
                     msg(
-                        event.channel.msg, "%s er over!" %
-                        cEvent["titlestr"]
-                    )
+                        event.channel.msg, "%s\x0F er over!" %
+                        cEvent["titlestr"])
                 else:
                     msg(
                         event.channel.msg, "Det er %s igjen av %s\x0F!" % (
                             countdownStrValues(remainingtime["end"]),
-                            cEvent["titlestr"])
-                    )
+                            cEvent["titlestr"]))
             else:
                 msg(
                     event.channel.msg,
                     "Countdown",
-                    "Usage: !countdown [Event]")
+                    "Usage: !countdown [Event]"
+                )
 
         except KeyError:
             warn(event.channel.msg, "Unknown Event")

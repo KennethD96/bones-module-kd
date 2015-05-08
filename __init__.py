@@ -21,16 +21,12 @@ class core(Module):
             arg = event.args[0].lower()
             try:
                 if LEVEL[arg] < 2:
-                    msg(
-                        event.channel.msg,
-                        "INFO",
+                    msg(event.channel.msg, "INFO",
                         "System time:\x0309 %s" %
                         (time.strftime("%d.%m.%Y %H:%M:%S %Z"))
                     )
                 if LEVEL[arg] < 1:
-                    msg(
-                        event.channel.msg,
-                        "INFO",
+                    msg(event.channel.msg, "INFO",
                         "Running \x0309%s %s\x0F on \x0309%s" % (
                             platform.python_implementation(),
                             platform.python_version(),
