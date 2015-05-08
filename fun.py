@@ -105,9 +105,8 @@ class triggers(Module):
     def getRandomNumber(self, event):
         getRef = False
         if len(event.args) > 0:
-            if [True for i in ["reference", "ref"] if i in event.args[0]]:
+            if "ref" in event.args[0]:
                 getRef = True
-
         if not getRef:
             msg(event.channel.msg, "4") # chosen by fair dice roll.
         else:                           # guaranteed to be random.
