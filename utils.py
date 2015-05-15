@@ -35,7 +35,7 @@ class math(Module):
             try:
                 calc = Popen("bc", stdin=PIPE, stdout=PIPE)
                 calc_input = (
-                    "".join(event.args).lower()
+                    " ".join(event.args).lower()
                     .replace(",", ".").encode('ascii'))
                 result = "".join(calc.communicate("%s;%s\n" % (
                     ";".join(constants), calc_input))[0].split('\\\n'))
