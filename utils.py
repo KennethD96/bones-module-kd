@@ -179,7 +179,7 @@ class math(Module):
 class misc(Module):
     def __init__(self, *args, **kwargs):
         Module.__init__(self, *args, **kwargs)
-        self.TIME_FMT = "\x0309%H:%M:%S \x0312%d.%m.%Y %Z"
+        self.TIME_FMT = "\x0309%H.%M.%S \x0312%d.%m.%Y %Z"
 
     @bones.event.handler(trigger="pw")
     @bones.event.handler(trigger="password")
@@ -209,6 +209,7 @@ class misc(Module):
     @bones.event.handler(trigger="tg")
     @bones.event.handler(trigger="tg16")
     @bones.event.handler(trigger="2016")
+    @bones.event.handler(trigger="win10")
     @bones.event.handler(trigger="countdown")
     def countdown(self, event):
         """Countdown timer
@@ -222,17 +223,12 @@ class misc(Module):
         *All dates must be specified in UTC
         """
         events = {
-            "tg15": {
-                "titlestr": "\x0312The Gathering 2015",
-                "start": datetime.datetime(2015, 4, 1, 7),
-                "end": datetime.datetime(2015, 4, 5, 9, 30),
-                "aliases": ["the gathering 2015"]
-            },
             "2016": {
                 "titlestr": "\x03092016",
                 "start": datetime.datetime(2015, 12, 31, 23),
                 "end": datetime.datetime(2016, 12, 31, 23)
             },
+
             "tg16": {
                 "titlestr": "\x0304The Gathering 2016",
                 "start": datetime.datetime(2016, 3, 23, 8),
@@ -240,6 +236,17 @@ class misc(Module):
                 "aliases": [
                     "tg", "gathering",
                     "The Gathering 2016", "Gathering 2016"
+                ]
+            },
+
+            "win10": {
+                "titlestr": "\x0311Windows 10 Release",
+                "start": datetime.datetime(2015, 7, 29, 7),
+                "end": datetime.datetime(2015, 7, 29, 7),
+                "aliases": [
+                    "windows10",
+                    "windows",
+                    "win"
                 ]
             },
         }

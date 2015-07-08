@@ -4,7 +4,7 @@ import os
 
 MODULE_NAME = "BONES-MODULE-KD_ESSENTIALS"
 MODULE_VERSION = "v0.1.1-DEV"
-MODULE_DATE = "08. May 2015 06:07 UTC"
+MODULE_DATE = "07. Jul 2015 20:32 UTC"
 
 MOD_PATH = os.path.dirname(__file__)
 ETC_PATH = MOD_PATH + "/etc/"
