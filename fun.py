@@ -20,6 +20,7 @@ class triggers(Module):
                 arg.strip() for arg in
                 " ".join(event.args).split(ARG_SEPARATOR)
             ]
+            # This needs cleanup
             target = event.user.nickname
             player = random.choice(event.channel.users).nickname
             materials = [
@@ -39,10 +40,12 @@ class triggers(Module):
                 "ahue",
                 "Java™"
             ]
+
             weapons = [
                 random.choice(materials) + " " + random.choice(tools),
                 random.choice(other)
             ]
+
             messagefiles = ["deathmessages.txt", "deathmessages_weapons.txt"]
             if len(event.args) >= 1:
                 if len(args[0].strip(" ")) >= 1:
@@ -58,11 +61,13 @@ class triggers(Module):
                 "\x0304" + player + "\x0F",
                 "\x0304" + random.choice(weapons) + "\x0F",
             )
+
             randomdeathmessage = os.path.join(
                 ETC_PATH,
                 "deathmessages",
                 random.choice(messagefiles)
             )
+
             with open(randomdeathmessage, "r") as deathmessages:
                 deathmessage = random.choice(deathmessages.readlines())
                 if "[target]" in deathmessage:
@@ -82,13 +87,13 @@ class triggers(Module):
             if os.path.exists(magic8_path):
                 with open(magic8_path, "r") as responses_file:
                     responses = responses_file.read().split("\n")
-                    magic8_response = random.choice(responses)
+                    magic8_response = random.choice(responses).replace("%c", "\x03")
                     while magic8_response == "":
                         magic8_response = random.choice(responses)
-                    msg(event.channel.msg, "8-Ball", "\x03" + magic8_response)
+                    msg(event.channel.msg, "Magic 8 Ball", magic8_response)
         else:
             msg(event.channel.msg,
-                "8-Ball", "Please give me a question.")
+                "Magic 8 Ball", "Please give me a question.")
 
     @bones.event.handler(trigger="fortune")
     def cmdFortune(self, event):
@@ -101,7 +106,7 @@ class triggers(Module):
             logger.error("Could not fetch Fortune, is it installed?")
 
     @bones.event.handler(trigger="rng")
-    @bones.event.handler(trigger="getrandomnumber")
+    @bones.event.handler(trigger="getRandomNumber")
     def getRandomNumber(self, event):
         getRef = False
         if len(event.args) > 0:
@@ -109,7 +114,8 @@ class triggers(Module):
                 getRef = True
         if not getRef:
             msg(event.channel.msg, "4") # chosen by fair dice roll.
-        else:                           # guaranteed to be random.
+                                        # guaranteed to be random.
+        else:
             msg(event.channel.msg, "https://xkcd.com/221/")
 
 
@@ -138,6 +144,7 @@ class responses(Module):
             "\x02|\x1f|\x1d|\x16|\x0f|\x03\d{0,2}(,\d{0,2})?",
             "", event.message
         )
+
         for trigger, response in self.randomresponses.iteritems():
             if msg_str.lower().startswith(trigger):
                 event.channel.msg(response)

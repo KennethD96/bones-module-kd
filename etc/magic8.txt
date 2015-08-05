@@ -1,20 +1,20 @@
-09It is certain
-09It is decidedly so
-09Without a doubt
-09Yes definitely
-09You may rely on it
-09As I see it, yes
-09Most likely
-09Outlook good
-09Yes
-09Signs point to yes
-08Reply hazy try again
-08Ask again later
-08Better not tell you now
-08Cannot predict now
-08Concentrate and ask again
-04Don't count on it
-04My reply is no
-04My sources say no
-04Outlook not so good
-04Very doubtful
+%c09It is certain
+%c09It is decidedly so
+%c09Without a doubt
+%c09Yes definitely
+%c09You may rely on it
+%c09As I see it, yes
+%c09Most likely
+%c09Outlook good
+%c09Yes
+%c09Signs point to yes
+%c08Reply hazy try again
+%c08Ask again later
+%c08Better not tell you now
+%c08Cannot predict now
+%c08Concentrate and ask again
+%c04Don't count on it
+%c04My reply is no
+%c04My sources say no
+%c04Outlook not so good
+%c04Very doubtful

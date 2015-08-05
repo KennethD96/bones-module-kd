@@ -241,8 +241,8 @@ class misc(Module):
 
             "win10": {
                 "titlestr": "\x0311Windows 10 Release",
-                "start": datetime.datetime(2015, 7, 29, 7),
-                "end": datetime.datetime(2015, 7, 29, 7),
+                "start": datetime.datetime(2015, 7, 28, 22),
+                "end": datetime.datetime(2015, 7, 28, 22),
                 "aliases": [
                     "windows10",
                     "windows",
@@ -382,7 +382,7 @@ class misc(Module):
                     timehandle = datetime.datetime.now(pytz.timezone(tz))
                 msg(
                     event.channel.msg, "TIME",
-                    "The time for \"%s\":" % tz)
+                    "The time in \"%s\":" % tz)
                 msg(
                     event.channel.msg, "TIME",
                     timehandle.strftime(self.TIME_FMT)
