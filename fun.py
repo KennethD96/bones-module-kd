@@ -36,9 +36,6 @@ class triggers(Module):
                 "Axe"
             ]
             other = [
-                "Diretide",
-                "ahue",
-                "Java™"
             ]
 
             weapons = [

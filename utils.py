@@ -29,7 +29,8 @@ class math(Module):
         maxLen = 275    # Maximum output length
         constants = [   # Pre-defined variables
             "c=299792458",
-            "pi=3.1415926535897932"
+            "pi=3.1415926535897932",
+            "scale=5"
         ]
         if event.args:
             try:
@@ -209,7 +210,7 @@ class misc(Module):
     @bones.event.handler(trigger="tg")
     @bones.event.handler(trigger="tg16")
     @bones.event.handler(trigger="2016")
-    @bones.event.handler(trigger="win10")
+    @bones.event.handler(trigger="2038")
     @bones.event.handler(trigger="countdown")
     def countdown(self, event):
         """Countdown timer
@@ -229,24 +230,30 @@ class misc(Module):
                 "end": datetime.datetime(2016, 12, 31, 23)
             },
 
+            "2017": {
+                "titlestr": "\x03092017",
+                "start": datetime.datetime(2016, 12, 31, 23),
+                "end": datetime.datetime(2017, 12, 31, 23)
+            },
+
             "tg16": {
                 "titlestr": "\x0304The Gathering 2016",
                 "start": datetime.datetime(2016, 3, 23, 8),
                 "end": datetime.datetime(2016, 3, 27, 9, 30),
                 "aliases": [
-                    "tg", "gathering",
-                    "The Gathering 2016", "Gathering 2016"
+                    "tg",
+                    "gathering",
+                    "The Gathering 2016",
+                    "Gathering 2016"
                 ]
             },
 
-            "win10": {
-                "titlestr": "\x0311Windows 10 Release",
-                "start": datetime.datetime(2015, 7, 28, 22),
-                "end": datetime.datetime(2015, 7, 28, 22),
+            "2038": {
+                "titlestr": "\x0311The Year 2038 Problem",
+                "start": datetime.datetime(2038, 1, 19, 3, 14, 7),
+                "end": datetime.datetime(2038, 1, 19, 3, 14, 7),
                 "aliases": [
-                    "windows10",
-                    "windows",
-                    "win"
+                    "year2038"
                 ]
             },
         }
