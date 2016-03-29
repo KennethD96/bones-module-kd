@@ -208,7 +208,9 @@ class misc(Module):
             event.user.notice('Here you go: %s' % rand)
 
     @bones.event.handler(trigger="tg")
+    @bones.event.handler(trigger="tg17")
     @bones.event.handler(trigger="tg16")
+    @bones.event.handler(trigger="2017")
     @bones.event.handler(trigger="2016")
     @bones.event.handler(trigger="2038")
     @bones.event.handler(trigger="countdown")
@@ -224,32 +226,42 @@ class misc(Module):
         *All dates must be specified in UTC
         """
         events = {
-            "2016": {
-                "titlestr": "\x03092016",
-                "start": datetime.datetime(2015, 12, 31, 23),
-                "end": datetime.datetime(2016, 12, 31, 23)
-            },
-
             "2017": {
                 "titlestr": "\x03092017",
                 "start": datetime.datetime(2016, 12, 31, 23),
                 "end": datetime.datetime(2017, 12, 31, 23)
             },
 
-            "tg16": {
-                "titlestr": "\x0304The Gathering 2016",
-                "start": datetime.datetime(2016, 3, 23, 8),
-                "end": datetime.datetime(2016, 3, 27, 9, 30),
+            "2016": {
+                "titlestr": "\x03092016",
+                "start": datetime.datetime(2015, 12, 31, 23),
+                "end": datetime.datetime(2016, 12, 31, 23)
+            },
+
+            "tg17": {
+                "titlestr": "\x0306The Gathering 2017",
+                "start": datetime.datetime(2017, 4, 12, 7),
+                "end": datetime.datetime(2017, 4, 16, 10),
                 "aliases": [
                     "tg",
                     "gathering",
+                    "The Gathering 2017",
+                    "Gathering 2017"
+                ]
+            },
+
+            "tg16": {
+                "titlestr": "\x0304The Gathering 2016",
+                "start": datetime.datetime(2016, 3, 23, 8),
+                "end": datetime.datetime(2016, 3, 27, 10),
+                "aliases": [
                     "The Gathering 2016",
                     "Gathering 2016"
                 ]
             },
 
             "2038": {
-                "titlestr": "\x0311The Year 2038 Problem",
+                "titlestr": "\x0311The Year 2038 Bug",
                 "start": datetime.datetime(2038, 1, 19, 3, 14, 7),
                 "end": datetime.datetime(2038, 1, 19, 3, 14, 7),
                 "aliases": [
