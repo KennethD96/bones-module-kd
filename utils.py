@@ -180,7 +180,7 @@ class math(Module):
 class misc(Module):
     def __init__(self, *args, **kwargs):
         Module.__init__(self, *args, **kwargs)
-        self.TIME_FMT = "\x0309%H.%M.%S \x0312%d.%m.%Y %Z"
+        self.TIME_FMT = "\x0309%H.%M.%S \x0312%d.%m.1%Y %Z"
 
     @bones.event.handler(trigger="pw")
     @bones.event.handler(trigger="password")
