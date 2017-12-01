@@ -208,8 +208,10 @@ class misc(Module):
             event.user.notice('Here you go: %s' % rand)
 
     @bones.event.handler(trigger="tg")
+    @bones.event.handler(trigger="tg18")
     @bones.event.handler(trigger="tg17")
     @bones.event.handler(trigger="tg16")
+    @bones.event.handler(trigger="2018")
     @bones.event.handler(trigger="2017")
     @bones.event.handler(trigger="2016")
     @bones.event.handler(trigger="2038")
@@ -226,6 +228,12 @@ class misc(Module):
         *All dates must be specified in UTC
         """
         events = {
+            "2018": {
+                "titlestr": "\x03092018",
+                "start": datetime.datetime(2017, 12, 31, 23),
+                "end": datetime.datetime(2018, 12, 31, 23)
+            },
+
             "2017": {
                 "titlestr": "\x03092017",
                 "start": datetime.datetime(2016, 12, 31, 23),
@@ -238,13 +246,23 @@ class misc(Module):
                 "end": datetime.datetime(2016, 12, 31, 23)
             },
 
+            "tg18": {
+                "titlestr": "\x0306The Gathering 2018",
+                "start": datetime.datetime(2018, 3, 28, 7),
+                "end": datetime.datetime(2017, 4, 1, 10),
+                "aliases": [
+                    "tg",
+                    "gathering",
+                    "The Gathering 2018",
+                    "Gathering 2018"
+                ]
+            },
+
             "tg17": {
                 "titlestr": "\x0306The Gathering 2017",
                 "start": datetime.datetime(2017, 4, 12, 7),
                 "end": datetime.datetime(2017, 4, 16, 10),
                 "aliases": [
-                    "tg",
-                    "gathering",
                     "The Gathering 2017",
                     "Gathering 2017"
                 ]
